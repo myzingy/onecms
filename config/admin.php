@@ -5,17 +5,17 @@ return [
     /*
      * Laravel-admin name.
      */
-    'name' => 'ONECMS',
+    'name' => '我是大V',
 
     /*
      * Logo in admin panel header.
      */
-    'logo' => '<b>ONE</b> CMS',
+    'logo' => '我是大<b>V</b>',
 
     /*
      * Mini-logo in admin panel header.
      */
-    'logo-mini' => '<b>CMS</b>',
+    'logo-mini' => '<b>V</b>',
 
     /*
      * Route configuration.
