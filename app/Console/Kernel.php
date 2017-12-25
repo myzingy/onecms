@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Console\Commands\statistics;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,7 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
-        statistics::class,
+        \App\Console\Commands\statistics::class,
     ];
 
     /**
