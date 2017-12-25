@@ -12,4 +12,7 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
 
+    $router->any('/statistics/platform', 'StatisticsController@platform');
+    $router->any('/statistics/lecturer', 'StatisticsController@lecturer');
+    //$router->resource('/statistics', StatisticsController::class);
 });

@@ -19,9 +19,9 @@
  */
 
 Encore\Admin\Form::forget(['map', 'editor']);
-app('view')->prependNamespace('admin', resource_path('views/admin/views'));
-Admin::js('/vendor/echart/echarts.common.min.js');
-Admin::js('/vendor/echart/shine.js');
+app('view')->prependNamespace('admin', resource_path('views/admin'));
+Admin::js('vendor/echarts/echarts.common.min.js');
+Admin::js('vendor/echarts/shine.js');
 //<script>
 //// 第二个参数可以指定前面引入的主题
 //var chart = echarts.init(document.getElementById('main'), 'shine');
