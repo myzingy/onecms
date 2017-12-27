@@ -2,7 +2,7 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\Daily;
+use App\Models\Paylog;
 
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -11,7 +11,7 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 
-class DailyControllers extends Controller
+class PaylogController extends Controller
 {
     use ModelForm;
 
@@ -24,7 +24,7 @@ class DailyControllers extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('讲师收入');
+            $content->header('逐笔明细');
             $content->description('');
 
             $content->body($this->grid());
@@ -41,8 +41,8 @@ class DailyControllers extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('手动结算');
-            $content->description('');
+            $content->header('header');
+            $content->description('description');
 
             $content->body($this->form()->edit($id));
         });
@@ -71,27 +71,17 @@ class DailyControllers extends Controller
      */
     protected function grid()
     {
-        return Admin::grid(Daily::class, function (Grid $grid) {
-
-            $grid->model()->with(['expert']);
-
-            $grid->expid('讲师ID')->sortable();
+        return Admin::grid(Paylog::class, function (Grid $grid) {
+            $grid->model()->with(['question','expert']);
+            $grid->payid('ID')->sortable();
+            $grid->openid('OPENID');
             $grid->column('expert.real_name','讲师姓名');
-            $grid->fee_total('本日收入');
-            $grid->fee_refund('退款申请金额');
-            $grid->fee_due('结算收入');
-            $grid->fee_owe('未结清金额');
-            $grid->column('state','结算状态')->display(function ($state) {
-                return Daily::STATE[$state];
-            });
-            $grid->actions(function ($actions) {
-                $actions->disableDelete();
-                $actions->disableEdit();
-                // append一个操作
-                if($actions->row->state==Daily::STATE_WJS || $actions->row->state==Daily::STATE_WJQ){
-                    $actions->append('<a href="/admin/daily/'.$actions->getKey().'/edit">手动结算</a>');
-                }
-
+            $grid->column('question.asker_name','提问者');
+            $grid->column('question.question','问题');
+            $grid->fee('金额');
+            $grid->timestamp('时间');
+            $grid->column('state','支付状态')->display(function ($state) {
+                return Paylog::STATE[$state];
             });
             //disableExport
             $grid->disableExport();
@@ -102,21 +92,33 @@ class DailyControllers extends Controller
                     $batch->disableDelete();
                 });
             });
+            $grid->actions(function ($actions) {
+                $actions->disableDelete();
+                $actions->disableEdit();
+                // append一个操作
+            });
             // filter($callback)方法用来设置表格的简单搜索框
             $grid->filter(function($filter){
                 // 如果过滤器太多，可以使用弹出模态框来显示过滤器.
                 $filter->useModal();
                 // 禁用id查询框
                 $filter->disableIdFilter();
-                $filter->equal('date', '日期')->date();
+                //$filter->equal('timestamp', '时间')->date();
+                $filter->between('timestamp', '时间')->datetime();
                 // 关系查询，查询对应关系`profile`的字段
                 $filter->where(function ($query) {
                     $input = $this->input;
                     $query->whereHas('expert', function ($query) use ($input) {
                         $query->where('real_name', 'like', "%{$input}%");
                     });
-                }, '真实姓名');
-                $filter->equal('state', '结算状态')->checkbox(Daily::STATE);
+                }, '讲师姓名');
+                $filter->where(function ($query) {
+                    $input = $this->input;
+                    $query->whereHas('question', function ($query) use ($input) {
+                        $query->where('asker_name', 'like', "%{$input}%");
+                    });
+                }, '提问者姓名');
+                $filter->equal('state', '支付状态')->checkbox(Paylog::STATE);
 
             });
         });
@@ -129,8 +131,8 @@ class DailyControllers extends Controller
      */
     protected function form()
     {
-        return Admin::form(Daily::class, function (Form $form) {
-            $form->title('手动结算');
+        return Admin::form(Paylog::class, function (Form $form) {
+
             $form->display('id', 'ID');
 
             $form->display('created_at', 'Created At');

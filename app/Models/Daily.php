@@ -17,7 +17,7 @@ class Daily extends Model
         self::STATE_YJQ_MANUAL=>'已结清，手动',
     ];
     protected $table = 'daily';
-
+    public $timestamps = false;
     public function expert()
     {
         return $this->hasOne(Expert::class,'expid','expid');

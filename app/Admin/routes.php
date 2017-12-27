@@ -13,7 +13,8 @@ Route::group([
     $router->get('/', 'HomeController@index');
     $router->resource('lecturer/apply', ExpertApplicationController::class);
 
-    $router->resource('/daily', DailyControllers::class);
+    $router->resource('/daily', DailyController::class);
+    $router->resource('/paylog', PaylogController::class);
 
     $router->any('/statistics/platform', 'StatisticsController@platform');
     $router->any('/statistics/lecturer', 'StatisticsController@lecturer');

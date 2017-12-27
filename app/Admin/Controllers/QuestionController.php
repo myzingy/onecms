@@ -2,7 +2,7 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\Expert;
+use App\Models\Question;
 
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -11,7 +11,7 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 
-class ExpertControllers extends Controller
+class QuestionController extends Controller
 {
     use ModelForm;
 
@@ -71,7 +71,7 @@ class ExpertControllers extends Controller
      */
     protected function grid()
     {
-        return Admin::grid(Expert::class, function (Grid $grid) {
+        return Admin::grid(Question::class, function (Grid $grid) {
 
             $grid->id('ID')->sortable();
 
@@ -87,7 +87,7 @@ class ExpertControllers extends Controller
      */
     protected function form()
     {
-        return Admin::form(Expert::class, function (Form $form) {
+        return Admin::form(Question::class, function (Form $form) {
 
             $form->display('id', 'ID');
 
