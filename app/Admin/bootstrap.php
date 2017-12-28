@@ -18,7 +18,7 @@
  *
  */
 
-Encore\Admin\Form::forget(['map', 'editor']);
+Encore\Admin\Form::forget(['map']);
 app('view')->prependNamespace('admin', resource_path('views/admin'));
 Admin::js('/vendor/echarts/echarts.common.min.js');
 Admin::js('/vendor/echarts/shine.js');

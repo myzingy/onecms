@@ -11,6 +11,8 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use Illuminate\Support\Facades\Input;
+use Encore\Admin\Widgets\InfoBox;
 
 class QuestionController extends Controller
 {
@@ -40,13 +42,39 @@ class QuestionController extends Controller
      */
     public function edit($id)
     {
-        return Admin::content(function (Content $content) use ($id) {
+        $act=Input::get('act','');
+        //refuse
+        if($act=='refuse'){//拒绝
+            $m=$this->form()->edit($id)->model();
+            if($m->expid==Admin::user()->id){
+                $m->state=Question::STATE_YJJ;
+                $m->save();
+            }else{
+                throw new \Exception('只允许讲师本人操作');
+            }
+            return redirect('/admin/question');
+        }elseif ($act=='answer'){
+            $m=$this->form()->edit($id)->model();
+            if($m->expid!=Admin::user()->id){
+                throw new \Exception('只允许讲师本人回复');
+            }
+            return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+                $content->header('讲师解答');
+                $content->description('');
 
-            $content->body($this->form()->edit($id));
-        });
+                $content->body($this->answer()->edit($id));
+            });
+        }else{
+            return Admin::content(function (Content $content) use ($id) {
+
+                $content->header('header');
+                $content->description('description');
+
+                $content->body($this->form()->edit($id));
+            });
+        }
+
     }
 
     /**
@@ -90,10 +118,11 @@ class QuestionController extends Controller
             $grid->column('paylog.state','支付状态')->display(function ($state) {
                 return Paylog::getStateStr($state);
             });
+            $grid->column('expert.real_name','讲师');
             $grid->column('state','问题状态')->display(function ($state) {
                 return Question::getStateStr($state);
             });
-            $grid->weight('排序')->sortable();
+            $grid->weight('排序')->sortable()->editable();
 
             $grid->disableRowSelector();
             //disableExport
@@ -105,6 +134,11 @@ class QuestionController extends Controller
                 $actions->disableDelete();
                 $actions->disableEdit();
                 // append一个操作
+                if($actions->row->state==Question::STATE_WHD){
+                    $actions->append('<a href="/admin/question/'.$actions->getKey().'/edit?act=answer">回 答</a>');
+                    $actions->append(' | ');
+                    $actions->append('<a href="/admin/question/'.$actions->getKey().'/edit?act=refuse" onclick="if(!confirm(\'确认拒绝答复？\')) return false;">拒 绝</a>');
+                }
             });
             // filter($callback)方法用来设置表格的简单搜索框
             $grid->filter(function($filter){
@@ -145,10 +179,22 @@ class QuestionController extends Controller
     {
         return Admin::form(Question::class, function (Form $form) {
 
-            $form->display('id', 'ID');
-
-            $form->display('created_at', 'Created At');
-            $form->display('updated_at', 'Updated At');
+            $form->display('question', '问题');
+            $form->editor('answer', '回复');
+            $form->saved(function (Form $form) {
+                if($form->state==Question::STATE_WHD && $form->answer){
+                    $form->model()->state=Question::STATE_YHD;
+                    $form->model()->save();
+                }
+            });
         });
+    }
+    function answer()
+    {
+        return Admin::form(Question::class, function (Form $form) {
+            $form->display('question', '问题');
+            $form->editor('answer', '回复');
+        });
+
     }
 }
