@@ -30,5 +30,11 @@ class Paylog extends Model
     {
         return $this->hasOne(Expert::class,'expid','expid');
     }
+    public static function getStateStr($state=self::STATE_WZF){
+        if(empty(self::STATE[$state])){
+            return self::STATE[self::STATE_WZF];
+        }
+        return self::STATE[$state];
+    }
 
 }

@@ -73,6 +73,7 @@ class PaylogController extends Controller
     {
         return Admin::grid(Paylog::class, function (Grid $grid) {
             $grid->model()->with(['question','expert']);
+            $grid->model()->orderBy('payid', 'desc');
             $grid->payid('ID')->sortable();
             $grid->openid('OPENID');
             $grid->column('expert.real_name','讲师姓名');
@@ -81,22 +82,15 @@ class PaylogController extends Controller
             $grid->fee('金额');
             $grid->timestamp('时间');
             $grid->column('state','支付状态')->display(function ($state) {
-                return Paylog::STATE[$state];
+                return Paylog::getStateStr($state);
             });
+            $grid->disableRowSelector();
             //disableExport
             $grid->disableExport();
             //disableCreation
             $grid->disableCreation();
-            $grid->tools(function ($tools) {
-                $tools->batch(function ($batch) {
-                    $batch->disableDelete();
-                });
-            });
-            $grid->actions(function ($actions) {
-                $actions->disableDelete();
-                $actions->disableEdit();
-                // append一个操作
-            });
+            $grid->disableActions();
+
             // filter($callback)方法用来设置表格的简单搜索框
             $grid->filter(function($filter){
                 // 如果过滤器太多，可以使用弹出模态框来显示过滤器.

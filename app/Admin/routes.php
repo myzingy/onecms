@@ -15,6 +15,7 @@ Route::group([
 
     $router->resource('/daily', DailyController::class);
     $router->resource('/paylog', PaylogController::class);
+    $router->resource('/question', QuestionController::class);
 
     $router->any('/statistics/platform', 'StatisticsController@platform');
     $router->any('/statistics/lecturer', 'StatisticsController@lecturer');
