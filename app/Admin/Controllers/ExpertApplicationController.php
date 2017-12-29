@@ -2,14 +2,16 @@
 
 namespace App\Admin\Controllers;
 
-use App\Admin\Models\ExpertApplication;
+use App\Models\ExpertApplication;
 
+use App\Models\Expert;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use Illuminate\Support\Facades\DB;
 
 class ExpertApplicationController extends Controller
 {
@@ -72,6 +74,9 @@ class ExpertApplicationController extends Controller
     protected function grid()
     {
         return Admin::grid(ExpertApplication::class, function (Grid $grid) {
+            if(Admin::user()->isRole('service')){
+                $grid->model()->where('state', '!=', ExpertApplication::STATE_PASS);
+            }
             $grid->model()->orderBy('created_at', 'desc');
 
             $grid->apid('申请ID')->sortable();
@@ -88,8 +93,7 @@ class ExpertApplicationController extends Controller
                 return ExpertApplication::$statusOptions[$v];
             });
 
-            $grid->created_at('申请时间')->sortable();
-            $grid->updated_at('更新时间');
+//            $grid->created_at('申请时间')->sortable();
 
             $grid->filter(function($filter){
 
@@ -130,7 +134,7 @@ class ExpertApplicationController extends Controller
             $form->text('unionid', 'unionId');
             //公众号信息
             $form->text('mp_name', '公众号名称');
-            $form->text('mp_img_url', '公众号图片');
+            $form->image('mp_img_url', '公众号图片');
             //$form->text('mp_qrcode', '公众号二维码');
             $form->image('mp_qrcode','公众号二维码');
             $form->text('mp_appid', '公众号AppId');
@@ -138,14 +142,21 @@ class ExpertApplicationController extends Controller
             $form->select('mp_auth', '是否认证')->options(ExpertApplication::$enableOptions);
             $form->text('mp_verify_file_url', '验证文件网址');//->rules('url');
             //审核操作
-            $form->select('state','状态')->options(ExpertApplication::$statusOptions);
-            $form->select('svc_type','驳回原因')->options(ExpertApplication::$svcTypeOptions);
+            $form->radio('state','状态')->options(ExpertApplication::$statusOptions);
+            $form->radio('rejected_reason','驳回原因')->options(ExpertApplication::$RejectedOptions);
             //服务方式
-            $form->select('service_type','服务方式')->options(ExpertApplication::$serviceTypeOptions);
+            $form->radio('svc_type','服务方式')->options(ExpertApplication::$svcTypeOptions);
 
 //
 //            $form->display('created_at', 'Created At');
 //            $form->display('updated_at', 'Updated At');
+            $form->saved(function (Form $form) {
+
+                if($form->state == ExpertApplication::STATE_PASS){//审核通过
+                    $mm = new Expert();
+                    $mm->addToExpert($form);
+                }
+            });
         });
     }
 }

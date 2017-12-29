@@ -12,6 +12,7 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
     $router->resource('lecturer/apply', ExpertApplicationController::class);
+    $router->resource('lecturer/users', ExpertController::class);
 
     $router->resource('/daily', DailyController::class);
     $router->resource('/paylog', PaylogController::class);
