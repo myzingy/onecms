@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Extensions\Confirm;
 use App\Models\Paylog;
 use App\Models\Question;
 
@@ -130,15 +131,17 @@ class QuestionController extends Controller
             //disableCreation
             $grid->disableCreation();
 
-            $grid->actions(function ($actions) {
+            $grid->actions(function ($actions) use ($grid) {
                 $actions->disableDelete();
                 $actions->disableEdit();
                 // append一个操作
                 if($actions->row->state==Question::STATE_WHD){
                     $actions->append('<a href="/admin/question/'.$actions->getKey().'/edit?act=answer">回 答</a>');
                     $actions->append(' | ');
-                    $actions->append('<a href="/admin/question/'.$actions->getKey().'/edit?act=refuse" onclick="if(!confirm(\'确认拒绝答复？\')) return false;">拒 绝</a>');
+                    //$actions->append('<a href="/admin/question/'.$actions->getKey().'/edit?act=refuse" onclick="if(!confirm(\'确认拒绝答复？\')) return false;">拒 绝</a>');
+                    $actions->append(new Confirm($actions->getKey(),'拒 绝','确认拒绝答复？','/admin/question/'.$actions->getKey().'/edit?act=refuse'));
                 }
+
             });
             // filter($callback)方法用来设置表格的简单搜索框
             $grid->filter(function($filter){
