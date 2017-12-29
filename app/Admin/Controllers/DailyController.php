@@ -92,15 +92,11 @@ class DailyController extends Controller
                 }
 
             });
+            $grid->disableRowSelector();
             //disableExport
             $grid->disableExport();
             //disableCreation
             $grid->disableCreation();
-            $grid->tools(function ($tools) {
-                $tools->batch(function ($batch) {
-                    $batch->disableDelete();
-                });
-            });
             // filter($callback)方法用来设置表格的简单搜索框
             $grid->filter(function($filter){
                 // 如果过滤器太多，可以使用弹出模态框来显示过滤器.
