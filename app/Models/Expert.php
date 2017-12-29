@@ -14,9 +14,25 @@ class Expert extends Model
     const ENABLE = 1;
     const DISABLE = 0;
 
+    const SVC_TYPE_QUESTION = 0;//问答
+    const SVC_TYPE_SUBSCRIBE = 1;//订阅
+
+    public static $stateOptions = [
+        Expert::ENABLE=>'启用',
+        Expert::DISABLE=>'禁用'];
+
     public static $enableOptions = [
         Expert::ENABLE=>'是',
         Expert::DISABLE=>'否',];
+
+    public static $svcTypeOptions = [
+        Expert::SVC_TYPE_QUESTION=>'问答',
+        Expert::SVC_TYPE_SUBSCRIBE=>'订阅'];
+
+    public function recom()
+    {
+        return $this->hasOne(ExpertRecom::class,'expid','expid');
+    }
 
 
     public function addToExpert($form){
