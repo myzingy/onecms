@@ -11,7 +11,7 @@ $(function(){
         if (!target.hasClass('popover')
                 && target.attr('data-toggle') !== 'popover'
                 && !target.hasClass('editable')
-                && target.closest('.popover').lenght<1
+                && target.closest('.popover').length<1
             && target.parent('.popover-content').length === 0
             && target.parent('.myPopover').length === 0
             && target.parent('.popover-title').length === 0
