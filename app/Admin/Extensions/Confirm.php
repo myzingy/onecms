@@ -48,14 +48,7 @@ $('.grid-row-confirm').unbind('click').click(function() {
                 },
                 success: function (data) {
                     $.pjax.reload('#pjax-container');
-    
-                    if (typeof data === 'object') {
-                        if (data.status) {
-                            swal(data.message, '', 'success');
-                        } else {
-                            swal(data.message, '', 'error');
-                        }
-                    }
+                    swal('操作成功', '', 'success');
                 },
                 error: function(x, e) {
                     if (x.status == 500) {

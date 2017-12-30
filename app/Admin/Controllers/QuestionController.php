@@ -8,6 +8,7 @@ use App\Models\Expert;
 use App\Models\Paylog;
 use App\Models\Question;
 
+use Encore\Admin\Auth\Permission;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Facades\Admin;
@@ -33,7 +34,7 @@ class QuestionController extends Controller
             $content->header('问答管理');
             $content->description('');
 
-            $content->body($this->grid());
+            $content->body('<style>.table.table-hover{background-color: #ebebeb;}</style>'.$this->grid());
         });
     }
 
@@ -52,7 +53,7 @@ class QuestionController extends Controller
             $m->state=Question::STATE_YJJ;
             $m->save();
             return redirect('/admin/question');
-        }elseif ($act=='stick'){
+        }elseif ($act=='stick'){//置顶
             $m=$this->form()->edit($id)->model();
             $m->pinned_time=$m->pinned_time>$m->timestamp?$m->timestamp:date('Y-m-d H:i:s',time());
             $m->save();
@@ -120,8 +121,12 @@ class QuestionController extends Controller
             });
             $grid->asker_name('提问者');
             $grid->timestamp('时间')->sortable();
-            $grid->question('问题');
-            $grid->answer('答案');
+            $grid->question('问题')->display(function($question){
+                return '<div style="width: 250px">'.$question.'</div>';
+            });
+            $grid->answer('答案')->display(function($answer){
+                return '<div style="width: 250px">'.$answer.'</div>';
+            });
             $grid->ispub('公开提问？')->display(function($ispub){
                 return Question::getIspubStr($ispub);
             });
@@ -140,14 +145,18 @@ class QuestionController extends Controller
 
 
             $grid->actions(function ($actions) {
-                $actions->disableDelete();
+                if(!Permission::check('*')) {
+                    $actions->disableDelete();
+                }
                 $actions->disableEdit();
                 // append一个操作
                 if($actions->row->state==Question::STATE_WHD){
-                    $actions->append('<a href="/admin/question/'.$actions->getKey().'/edit?act=answer">回 答</a>');
-                    $actions->append(' | ');
-                    //$actions->append('<a href="/admin/question/'.$actions->getKey().'/edit?act=refuse" onclick="if(!confirm(\'确认拒绝答复？\')) return false;">拒 绝</a>');
-                    $actions->append(new Confirm($actions->getKey(),'拒 绝','确认拒绝答复？','/admin/question/'.$actions->getKey().'/edit?act=refuse'));
+                    $actions->prepend(new Confirm($actions->getKey(),'拒 绝','确认拒绝答复？','/admin/question/'.$actions->getKey().'/edit?act=refuse'));
+                    $actions->prepend(' | ');
+                    $actions->prepend('<a href="/admin/question/'.$actions->getKey().'/edit?act=answer">回 答</a>');
+
+                }else if($actions->row->state==Question::STATE_YHD){
+                    $actions->prepend('<a href="/admin/question/'.$actions->getKey().'/edit?act=answer">修改答案</a>&nbsp;&nbsp;');
                 }
 
             });
