@@ -42,6 +42,10 @@ class ExpertRecomController extends Controller
      */
     public function edit($id)
     {
+        if(!Auth::isAdministrator()){
+            throw new \Exception('只有超级管理员有权操作');
+
+        }
         return Admin::content(function (Content $content) use ($id) {
 
             $content->header('header');
@@ -92,13 +96,26 @@ class ExpertRecomController extends Controller
         return Admin::grid(ExpertRecom::class, function (Grid $grid) {
             $grid->disableFilter();
             $grid->disableExport();
+            $grid->disableCreation();
             $grid->disableRowSelector();
+            $grid->actions(function ($actions) {
+
+                // 没有`delete-image`权限的角色不显示删除按钮
+                if (!Auth::isAdministrator()) {
+                    $actions->disableDelete();
+                }
+            });
             $grid->expid('讲师ID');
             $grid->column('expert.real_name','讲师名');
             $grid->column('expert.mp_name','公众号');
             $grid->column('desc','简介');
 //            $grid->desc('描述')->sortable();
-//            $grid->weight('权重')->sortable();
+            if (!Auth::isAdministrator()) {
+                $grid->weight('权重');
+            }else{
+                $grid->weight('权重')->editable();
+            }
+
 
             $grid->model()->orderBy('weight', 'desc');
         });

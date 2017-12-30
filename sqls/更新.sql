@@ -22,5 +22,10 @@ ALTER TABLE `expert`
 	ADD COLUMN `wx_qrcode` VARCHAR(1024) NULL DEFAULT NULL AFTER `wx_img_url`,
 	ADD COLUMN `mp_qrcode` VARCHAR(45) NULL DEFAULT NULL AFTER `mp_secret`,
 	ADD COLUMN `mp_auth` TINYINT(1) NULL AFTER `state`;
+
+
+
+ALTER TABLE `expert_application`
+	ADD COLUMN `deleted_at` DATETIME NULL DEFAULT NULL AFTER `cfaid`;
 	
 

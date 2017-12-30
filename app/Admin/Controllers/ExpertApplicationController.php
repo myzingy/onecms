@@ -78,7 +78,7 @@ class ExpertApplicationController extends Controller
             $grid->disableExport();
             $grid->disableRowSelector();
             $grid->actions(function ($actions) {
-                $actions->disableDelete();
+               // $actions->disableDelete();
             });
             if(Admin::user()->isRole('service')){
                 $grid->model()->where('state', '!=', ExpertApplication::STATE_PASS);
@@ -87,17 +87,18 @@ class ExpertApplicationController extends Controller
 
             $grid->apid('申请ID');
             $grid->real_name('真实姓名');
-            $grid->mp_name('公众号名称');
+            $grid->mp_name('公众号名称')->popover(['placement'=>'right','column'=>'mp_qrcode']);
             $grid->mobile('手机号');
-            $grid->wx_name('微信昵称');
+            $grid->wx_name('微信昵称')->popover(['placement'=>'right','column'=>'wx_qrcode']);
+            $grid->wx_img_url('微信头像')->display(function ($name) {
+                return $name ? "<img width='60px' src='$name' />" : '';
+            })->popover(['placement'=>'right','column'=>'wx_qrcode']);
             $grid->state('状态')->display(function ($v) {
                 return ExpertApplication::$statusOptions[$v];
             });
 
 //            $grid->qq('qq');
-//            $grid->wx_img_url('微信头像')->display(function ($name) {
-//                return $name ? "<img width='80px' src='$name' />" : '';
-//            });
+
 
 
 //            $grid->created_at('申请时间')->sortable();

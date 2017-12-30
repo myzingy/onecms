@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ExpertApplication extends Model
 {
+    use SoftDeletes;
     protected $table = 'expert_application';
     protected $primaryKey = 'apid';
     public $timestamps = false;
