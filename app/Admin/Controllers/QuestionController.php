@@ -8,6 +8,7 @@ use App\Models\Expert;
 use App\Models\Paylog;
 use App\Models\Question;
 
+use Encore\Admin\Auth\Database\Role;
 use Encore\Admin\Auth\Permission;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -145,7 +146,7 @@ class QuestionController extends Controller
 
 
             $grid->actions(function ($actions) {
-                if(!Permission::check('*')) {
+                if(!Admin::user()->isRole('administrator') && !Admin::user()->isRole('manager')) {
                     $actions->disableDelete();
                 }
                 $actions->disableEdit();
@@ -198,12 +199,12 @@ class QuestionController extends Controller
     protected function form()
     {
         return Admin::form(Question::class, function (Form $form) {
-            \Log::info('form:'.json_encode($form));
+            //\Log::info('form:'.json_encode($form));
             $form->text('question', '问题');
             $form->editor('answer', '回复');
             $form->saved(function (Form $form) {
-                \Log::info('form-saved:'.$form->answer);
-                if(!$form->asker_openid){
+                //\Log::info('form-saved:'.$form->model()->asker_openid);
+                if(!$form->model()->asker_openid){
                     $expert=Expert::find(Admin::user()->id);
                     $form->model()->timestamp=date('Y-m-d H:i:s',time());
                     $form->model()->asker_name=$expert->wx_name;
@@ -218,7 +219,7 @@ class QuestionController extends Controller
                     $form->model()->save();
 
                 }
-                if($form->answer){
+                if($form->model()->answer){
                     $form->model()->state=Question::STATE_YHD;
                     $form->model()->save();
                 }
