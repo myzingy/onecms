@@ -99,7 +99,8 @@ class ExpertController extends Controller
             $grid->model()->orderBy('expid', 'asc');
 
             $grid->expid('讲师ID');
-            $grid->real_name('真实姓名')->popover();
+            //$grid->real_name('真实姓名')->popover();
+            $grid->real_name('真实姓名');
             $grid->wx_name('微信昵称');
             $grid->mp_name('公众号名称');
             $grid->openid('OpenID');
