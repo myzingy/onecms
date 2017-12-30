@@ -72,7 +72,10 @@ class DailyController extends Controller
         return Admin::grid(Daily::class, function (Grid $grid) {
 
             $grid->model()->with(['expert']);
-
+            if(Admin::user()->isRole('lecturer')){
+                $grid->model()->where('expid', '=', Admin::user()->id);
+                $grid->disableActions();
+            }
             $grid->expid('讲师ID')->sortable();
             $grid->column('expert.real_name','讲师姓名');
             $grid->fee_total('本日收入');

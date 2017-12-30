@@ -72,6 +72,11 @@ class PaylogController extends Controller
     protected function grid()
     {
         return Admin::grid(Paylog::class, function (Grid $grid) {
+            if(Admin::user()->isRole('lecturer')){
+                $grid->model()->where('expid', '=', Admin::user()->id);
+            }
+            $grid->model()->where('state','<>',Paylog::STATE_WZF);
+
             $grid->model()->with(['question','expert']);
             $grid->model()->orderBy('payid', 'desc');
             $grid->payid('ID')->sortable();
