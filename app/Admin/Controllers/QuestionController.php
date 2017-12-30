@@ -199,7 +199,7 @@ class QuestionController extends Controller
                     $form->model()->timestamp=date('Y-m-d H:i:s',time());
                     $form->model()->asker_name=$expert->wx_name;
                     $form->model()->asker_img_url=$expert->wx_img_url;
-                    $form->model()->expid=$expert->id;
+                    $form->model()->expid=$expert->expid;
                     $form->model()->ispub=Question::ISPUB_YES;
                     $form->model()->state=Question::STATE_WHD;
                     $form->model()->asker_openid=$expert->openid;
