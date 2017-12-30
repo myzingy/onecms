@@ -26,6 +26,7 @@ Encore\Admin\Form::forget(['map']);
 app('view')->prependNamespace('admin', resource_path('views/admin'));
 Admin::js('/vendor/echarts/echarts.common.min.js');
 Admin::js('/vendor/echarts/shine.js');
+Admin::js('/js/index.js');
 Form::extend('editor', WangEditor::class);
 Column::extend('popover', Popover::class);
 //<script>

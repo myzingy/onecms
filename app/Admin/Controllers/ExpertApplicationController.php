@@ -43,8 +43,8 @@ class ExpertApplicationController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('申请入驻');
+            $content->description('');
 
             $content->body($this->form()->edit($id));
         });
@@ -59,8 +59,8 @@ class ExpertApplicationController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('申请入驻');
+            $content->description('');
 
             $content->body($this->form());
         });

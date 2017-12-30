@@ -18,6 +18,11 @@ class Auth
       return Admin::user()->isRole('manager');
    }
 
+   //admin
+   public static function isAdmin(){
+      return Auth::isAdministrator() || Auth::isManager();
+   }
+
    //讲师
    public static function isLecturer($uid = false){
       if($uid!==false) return Admin::user()->id==$uid && Admin::user()->isRole('lecturer');

@@ -42,14 +42,13 @@ class ExpertRecomController extends Controller
      */
     public function edit($id)
     {
-        if(!Auth::isAdministrator()){
-            throw new \Exception('只有超级管理员有权操作');
-
+        if(!Auth::isAdmin()){
+            throw new \Exception('只有管理员有权操作');
         }
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('讲师推荐');
+            $content->description('');
 
             $content->body($this->form()->edit($id));
         });
@@ -65,7 +64,7 @@ class ExpertRecomController extends Controller
         $id = Input::get('id','');
         $max = 50;
         if(!$id) throw new \Exception('参数不正确');
-        if(Auth::isAdministrator()){
+        if(Auth::isAdmin()){
             $info = Expert::find($id);
             $sum = ExpertRecom::count();
             if($sum > $max) throw new \Exception('推荐最多只有'.$max.'个');
@@ -82,7 +81,7 @@ class ExpertRecomController extends Controller
 
 
         }
-        throw new \Exception('只有超级管理员有权操作');
+        throw new \Exception('只有管理员有权操作');
 
     }
 
@@ -101,7 +100,7 @@ class ExpertRecomController extends Controller
             $grid->actions(function ($actions) {
 
                 // 没有`delete-image`权限的角色不显示删除按钮
-                if (!Auth::isAdministrator()) {
+                if (!Auth::isAdmin()) {
                     $actions->disableDelete();
                 }
             });
@@ -110,7 +109,7 @@ class ExpertRecomController extends Controller
             $grid->column('expert.mp_name','公众号');
             $grid->column('desc','简介');
 //            $grid->desc('描述')->sortable();
-            if (!Auth::isAdministrator()) {
+            if (!Auth::isAdmin()) {
                 $grid->weight('权重');
             }else{
                 $grid->weight('权重')->editable();

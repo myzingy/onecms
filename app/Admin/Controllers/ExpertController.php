@@ -49,7 +49,7 @@ class ExpertController extends Controller
         return Admin::content(function (Content $content) use ($id) {
 
             $content->header('讲师管理');
-            $content->description('description');
+            $content->description('');
 
             $content->body($this->form()->edit($id));
         });
@@ -65,7 +65,7 @@ class ExpertController extends Controller
         return Admin::content(function (Content $content) {
 
             $content->header('讲师管理');
-            $content->description('description');
+            $content->description('');
 
             $content->body($this->form());
         });
@@ -196,9 +196,10 @@ class ExpertController extends Controller
             }
 
             $form->editor('exp_intro', '讲师介绍');
-            $form->image('exp_bg_url', '背景图')->rules('dimensions:min_width=100,min_height=200,max_width=500,max_height=1000',[
-                'dimensions' => '图片有效长宽为：100x200至500x1000',
-            ]);
+            $form->image('exp_bg_url', '背景图');
+//            ->rules('dimensions:min_width=100,min_height=200,max_width=500,max_height=1000',[
+//                'dimensions' => '图片有效长宽为：100x200至500x1000',
+//            ]);
             $form->text('price_ask', '提问费用')->rules('required|numeric|min:10|max:100');
             $form->text('price_see', '查看费用')->rules('required|numeric|min:10|max:100');
             $form->text('max_question', '每日提问上限')->rules('required|numeric|min:0');
