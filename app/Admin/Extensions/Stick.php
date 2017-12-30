@@ -1,299 +1,64 @@
 <?php
 
-namespace Encore\Admin\Grid\Displayers;
+namespace App\Admin\Extensions;
 
 use Encore\Admin\Admin;
+use Encore\Admin\Grid\Displayers\AbstractDisplayer;
 
 class Stick extends AbstractDisplayer
 {
-    /**
-     * @var array
-     */
-    protected $appends = [];
-
-    /**
-     * @var array
-     */
-    protected $prepends = [];
-
-    /**
-     * @var bool
-     */
-    protected $allowEdit = true;
-
-    /**
-     * @var bool
-     */
-    protected $allowDelete = true;
-
-    /**
-     * @var bool
-     */
-    protected $allowConfig = false;
-
-    /**
-     * @var string
-     */
-    protected $resource;
-
-    /**
-     * @var
-     */
-    protected $key;
-
-    /**
-     * Append a action.
-     *
-     * @param $action
-     *
-     * @return $this
-     */
-    public function append($action)
-    {
-        array_push($this->appends, $action);
-
-        return $this;
-    }
-
-    /**
-     * Prepend a action.
-     *
-     * @param $action
-     *
-     * @return $this
-     */
-    public function prepend($action)
-    {
-        array_unshift($this->prepends, $action);
-
-        return $this;
-    }
-
-    /**
-     * Disable delete.
-     *
-     * @return void.
-     */
-    public function disableDelete()
-    {
-        $this->allowDelete = false;
-    }
-
-    /**
-     * Disable edit.
-     *
-     * @return void.
-     */
-    public function disableEdit()
-    {
-        $this->allowEdit = false;
-    }
-
-    /**
-     * Disable edit.
-     *
-     * @return void.
-     */
-    public function enableConfirm($name,$info,$url)
-    {
-        $this->allowConfirm = true;
-    }
-
-    /**
-     * Set resource of current resource.
-     *
-     * @param $resource
-     *
-     * @return void
-     */
-    public function setResource($resource)
-    {
-        $this->resource = $resource;
-    }
-
-    /**
-     * Get resource of current resource.
-     *
-     * @return string
-     */
-    public function getResource()
-    {
-        return $this->resource ?: parent::getResource();
-    }
-
+    const TYPE_YES=1;
+    const TYPE_NO=0;
     /**
      * {@inheritdoc}
      */
-    public function display($callback = null)
+    public function display()
     {
-        if ($callback instanceof \Closure) {
-            $callback->call($this, $this);
-        }
-
-        $actions = $this->prepends;
-        if ($this->allowEdit) {
-            array_push($actions, $this->editAction());
-        }
-
-        if ($this->allowDelete) {
-            array_push($actions, $this->deleteAction());
-        }
-
-        if ($this->allowConfirm) {
-            array_push($actions, $this->confirmAction());
-        }
-
-        $actions = array_merge($actions, $this->appends);
-
-        return implode('', $actions);
-    }
-
-    public function setKey($key)
-    {
-        $this->key = $key;
-
-        return $this;
-    }
-
-    public function getKey()
-    {
-        if ($this->key) {
-            return $this->key;
-        }
-
-        return parent::getKey();
-    }
-
-    /**
-     * Built edit action.
-     *
-     * @return string
-     */
-    protected function editAction()
-    {
-        return <<<EOT
-<a href="{$this->getResource()}/{$this->getKey()}/edit">
-    <i class="fa fa-edit"></i>
-</a>
-EOT;
-    }
-
-    /**
-     * Built delete action.
-     *
-     * @return string
-     */
-    protected function deleteAction()
-    {
-        $deleteConfirm = trans('admin.delete_confirm');
-        $confirm = trans('admin.confirm');
-        $cancel = trans('admin.cancel');
-
         $script = <<<SCRIPT
 
-$('.grid-row-delete').unbind('click').click(function() {
-
+$('.question-stick').unbind('click').click(function() {
+    toastr.success('操作成功');
     var id = $(this).data('id');
+    $.ajax({
+        method: 'post',
+        url: '{$this->getResource()}/' + id+'/edit?act=stick',
+        data: {
+            _method:'get',
+            _token:LA.token,
+        },
+        success: function (data) {
+            $.pjax.reload('#pjax-container');
 
-    swal({
-      title: "$deleteConfirm",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#DD6B55",
-      confirmButtonText: "$confirm",
-      closeOnConfirm: false,
-      cancelButtonText: "$cancel"
-    },
-    function(){
-        $.ajax({
-            method: 'post',
-            url: '{$this->getResource()}/' + id,
-            data: {
-                _method:'delete',
-                _token:LA.token,
-            },
-            success: function (data) {
-                $.pjax.reload('#pjax-container');
-
-                if (typeof data === 'object') {
-                    if (data.status) {
-                        swal(data.message, '', 'success');
-                    } else {
-                        swal(data.message, '', 'error');
-                    }
+            if (typeof data === 'object') {
+                if (data.status) {
+                    swal(data.message, '', 'success');
+                } else {
+                    swal(data.message, '', 'error');
                 }
             }
-        });
+        }
     });
 });
 
 SCRIPT;
-
         Admin::script($script);
-
+        if($this->row->pinned_time
+            && $this->row->pinned_time>$this->row->timestamp){//已经置顶
+            $name='已置顶';
+            $title='已置顶,点击取消';
+            $class='danger';
+        }else{
+            $name='未置顶';
+            $title='未置顶,点击置顶';
+            $class='warning';
+        }
         return <<<EOT
-<a href="javascript:void(0);" data-id="{$this->getKey()}" class="grid-row-delete">
-    <i class="fa fa-trash"></i>
-</a>
-EOT;
-    }
-    /**
-     * Built delete action.
-     *
-     * @return string
-     */
-    protected function confirmAction($name,$title='确认继续吗？')
-    {
-        $deleteConfirm = $title;
-        $confirm = trans('admin.confirm');
-        $cancel = trans('admin.cancel');
+<button type="button"
+    class="btn btn-$class question-stick"
+    title="$title" data-id="{$this->getKey()}">
+    $name
+</button>
 
-        $script = <<<SCRIPT
-
-$('.grid-row-delete').unbind('click').click(function() {
-
-    var id = $(this).data('id');
-
-    swal({
-      title: "$deleteConfirm",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#DD6B55",
-      confirmButtonText: "$confirm",
-      closeOnConfirm: false,
-      cancelButtonText: "$cancel"
-    },
-    function(){
-        $.ajax({
-            method: 'post',
-            url: '{$this->getResource()}/' + id,
-            data: {
-                _method:'delete',
-                _token:LA.token,
-            },
-            success: function (data) {
-                $.pjax.reload('#pjax-container');
-
-                if (typeof data === 'object') {
-                    if (data.status) {
-                        swal(data.message, '', 'success');
-                    } else {
-                        swal(data.message, '', 'error');
-                    }
-                }
-            }
-        });
-    });
-});
-
-SCRIPT;
-
-        Admin::script($script);
-
-        return <<<EOT
-<a href="javascript:void(0);" data-id="{$this->getKey()}" class="grid-row-delete">
-    {$name}
-</a>
 EOT;
     }
 }

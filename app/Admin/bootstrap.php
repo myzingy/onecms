@@ -21,7 +21,7 @@ use App\Admin\Extensions\WangEditor;
 use Encore\Admin\Form;
 use Encore\Admin\Grid\Column;
 use App\Admin\Extensions\Popover;
-
+use App\Admin\Extensions\Stick;
 Encore\Admin\Form::forget(['map']);
 app('view')->prependNamespace('admin', resource_path('views/admin'));
 Admin::js('/vendor/echarts/echarts.common.min.js');
@@ -35,3 +35,6 @@ Admin::js('/vendor/echarts/shine.js');
 //    ...
 //});
 //</script>
+
+
+Column::extend('stick', Stick::class);

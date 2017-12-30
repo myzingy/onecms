@@ -47,18 +47,19 @@ class QuestionController extends Controller
         //refuse
         if($act=='refuse'){//拒绝
             $m=$this->form()->edit($id)->model();
-            if($m->expid==Admin::user()->id){
-                $m->state=Question::STATE_YJJ;
-                $m->save();
-            }else{
-                throw new \Exception('只允许讲师本人操作');
-            }
+            $m->state=Question::STATE_YJJ;
+            $m->save();
+            return redirect('/admin/question');
+        }elseif ($act=='stick'){
+            $m=$this->form()->edit($id)->model();
+            $m->pinned_time=$m->pinned_time>$m->timestamp?$m->timestamp:date('Y-m-d H:i:s',time());
+            $m->save();
             return redirect('/admin/question');
         }elseif ($act=='answer'){
-            $m=$this->form()->edit($id)->model();
-            if($m->expid!=Admin::user()->id){
-                throw new \Exception('只允许讲师本人回复');
-            }
+//            $m=$this->form()->edit($id)->model();
+//            if($m->expid!=Admin::user()->id){
+//                throw new \Exception('只允许讲师本人回复');
+//            }
             return Admin::content(function (Content $content) use ($id) {
 
                 $content->header('讲师解答');
@@ -103,7 +104,7 @@ class QuestionController extends Controller
     {
         return Admin::grid(Question::class, function (Grid $grid) {
             $grid->model()->with(['expert','paylog']);
-            $grid->model()->orderBy('weight', 'desc');
+            $grid->model()->orderBy('pinned_time', 'desc');
             $grid->model()->orderBy('timestamp', 'desc');
             $grid->qid('ID')->sortable();
             $grid->asker_img_url('头像')->display(function($img){
@@ -123,15 +124,15 @@ class QuestionController extends Controller
             $grid->column('state','问题状态')->display(function ($state) {
                 return Question::getStateStr($state);
             });
-            $grid->weight('排序')->sortable()->editable();
+            $grid->pinned_time('置顶')->stick();
 
             $grid->disableRowSelector();
             //disableExport
             $grid->disableExport();
             //disableCreation
-            $grid->disableCreation();
+            //$grid->disableCreation();
 
-            $grid->actions(function ($actions) use ($grid) {
+            $grid->actions(function ($actions) {
                 $actions->disableDelete();
                 $actions->disableEdit();
                 // append一个操作

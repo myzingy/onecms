@@ -10,7 +10,10 @@ Route::group([
     'middleware'    => config('admin.route.middleware'),
 ], function (Router $router) {
 
-    $router->get('/', 'HomeController@index');
+    //$router->get('/', 'HomeController@index');
+    $router->get('/',function (){
+        return Redirect::to("/admin/question");
+    });
     $router->resource('lecturer/apply', ExpertApplicationController::class);
     $router->resource('lecturer/users', ExpertController::class);
     $router->resource('lecturer/publicity', ExpertRecomController::class);
