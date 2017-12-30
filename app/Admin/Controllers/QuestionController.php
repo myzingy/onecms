@@ -3,6 +3,8 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Extensions\Confirm;
+use App\Models\Auth;
+use App\Models\Expert;
 use App\Models\Paylog;
 use App\Models\Question;
 
@@ -70,8 +72,8 @@ class QuestionController extends Controller
         }else{
             return Admin::content(function (Content $content) use ($id) {
 
-                $content->header('header');
-                $content->description('description');
+                $content->header('新建问题');
+                $content->description('');
 
                 $content->body($this->form()->edit($id));
             });
@@ -88,8 +90,8 @@ class QuestionController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('新建问题');
+            $content->description('');
 
             $content->body($this->form());
         });
@@ -103,6 +105,12 @@ class QuestionController extends Controller
     protected function grid()
     {
         return Admin::grid(Question::class, function (Grid $grid) {
+            if(Admin::user()->isRole('lecturer')){
+                $grid->model()->where('expid', '=', Admin::user()->id);
+            }else{
+                //disableCreation
+                $grid->disableCreation();
+            }
             $grid->model()->with(['expert','paylog']);
             $grid->model()->orderBy('pinned_time', 'desc');
             $grid->model()->orderBy('timestamp', 'desc');
@@ -129,8 +137,7 @@ class QuestionController extends Controller
             $grid->disableRowSelector();
             //disableExport
             $grid->disableExport();
-            //disableCreation
-            //$grid->disableCreation();
+
 
             $grid->actions(function ($actions) {
                 $actions->disableDelete();
@@ -182,11 +189,27 @@ class QuestionController extends Controller
     protected function form()
     {
         return Admin::form(Question::class, function (Form $form) {
-
-            $form->display('question', '问题');
+            \Log::info('form:'.json_encode($form));
+            $form->text('question', '问题');
             $form->editor('answer', '回复');
             $form->saved(function (Form $form) {
-                if($form->state==Question::STATE_WHD && $form->answer){
+                \Log::info('form-saved:'.$form->answer);
+                if(!$form->asker_openid){
+                    $expert=Expert::find(Admin::user()->id);
+                    $form->model()->timestamp=date('Y-m-d H:i:s',time());
+                    $form->model()->asker_name=$expert->wx_name;
+                    $form->model()->asker_img_url=$expert->wx_img_url;
+                    $form->model()->expid=$expert->id;
+                    $form->model()->ispub=Question::ISPUB_YES;
+                    $form->model()->state=Question::STATE_WHD;
+                    $form->model()->asker_openid=$expert->openid;
+                    if($form->answer){
+                        $form->model()->state=Question::STATE_YHD;
+                    }
+                    $form->model()->save();
+
+                }
+                if($form->answer){
                     $form->model()->state=Question::STATE_YHD;
                     $form->model()->save();
                 }
@@ -196,8 +219,12 @@ class QuestionController extends Controller
     function answer()
     {
         return Admin::form(Question::class, function (Form $form) {
-            $form->display('question', '问题');
+            $form->text('question', '问题');
             $form->editor('answer', '回复');
+            \Log::info('answer:'.json_encode($form));
+            $form->saved(function (Form $form) {
+                \Log::info('answer-saved:'.json_encode($form));
+            });
         });
 
     }
