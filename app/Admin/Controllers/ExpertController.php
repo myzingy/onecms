@@ -173,6 +173,7 @@ class ExpertController extends Controller
                 if(Auth::isAdministrator()){
                     $form->text('openid', 'openID');
                     $form->text('unionid', 'unionId');
+//                    $form->text('openid_mini', 'openId mini');
                 }else{
                     $form->display('openid', 'openID');
                     $form->display('unionid', 'unionId');
