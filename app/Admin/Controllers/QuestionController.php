@@ -3,13 +3,11 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Extensions\Confirm;
-use App\Models\Auth;
+
 use App\Models\Expert;
 use App\Models\Paylog;
 use App\Models\Question;
 
-use Encore\Admin\Auth\Database\Role;
-use Encore\Admin\Auth\Permission;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Facades\Admin;
@@ -17,7 +15,7 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 use Illuminate\Support\Facades\Input;
-use Encore\Admin\Widgets\InfoBox;
+
 
 class QuestionController extends Controller
 {
@@ -60,10 +58,6 @@ class QuestionController extends Controller
             $m->save();
             return redirect('/admin/question');
         }elseif ($act=='answer'){
-//            $m=$this->form()->edit($id)->model();
-//            if($m->expid!=Admin::user()->id){
-//                throw new \Exception('只允许讲师本人回复');
-//            }
             return Admin::content(function (Content $content) use ($id) {
 
                 $content->header('讲师解答');
@@ -231,9 +225,9 @@ class QuestionController extends Controller
         return Admin::form(Question::class, function (Form $form) {
             $form->text('question', '问题');
             $form->editor('answer', '回复');
-            \Log::info('answer:'.json_encode($form));
+            //\Log::info('answer:'.json_encode($form));
             $form->saved(function (Form $form) {
-                \Log::info('answer-saved:'.json_encode($form));
+                //\Log::info('answer-saved:'.json_encode($form));
             });
         });
 
