@@ -10,6 +10,7 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use Illuminate\Support\Facades\Input;
 
 class PaylogController extends Controller
 {
@@ -39,6 +40,25 @@ class PaylogController extends Controller
      */
     public function edit($id)
     {
+        $act=Input::get('act','');
+        //refuse
+        if($act=='refund'){//退款
+            $m=$this->form()->edit($id)->model();
+            $m->state=Paylog::STATE_YTK;
+            $m->save();
+            $url='http://dv.cnfol.com/refund/refund?tradeno='
+            .$m->trade_no.'&fee='
+                .$m->fee.'&code='
+                .md5($m->trade_no.$m->fee.'OJjjfdfjsdfsdfji@!&*@^*&^^jjjfdsfjds');
+            \Log::info('refund-url:'.$url);
+            $res=$this->curl_get_contents($url,30);
+            if($res!='OK'){
+                $m->state=Paylog::STATE_TSB;
+                $m->save();
+                throw new \Exception('退款失败');
+            }
+            return redirect('/admin/question');
+        }
         return Admin::content(function (Content $content) use ($id) {
 
             $content->header('header');
@@ -91,6 +111,9 @@ class PaylogController extends Controller
             $grid->column('state','支付状态')->display(function ($state) {
                 return Paylog::getStateStr($state);
             });
+            if(!Admin::user()->isRole('lecturer')){
+                $grid->column('state_x','退款')->refund();
+            }
             $grid->disableRowSelector();
             //disableExport
             $grid->disableExport();
@@ -139,5 +162,14 @@ class PaylogController extends Controller
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
         });
+    }
+    function curl_get_contents($url,$timeout=1) {
+        $curlHandle = curl_init();
+        curl_setopt( $curlHandle , CURLOPT_URL, $url );
+        curl_setopt( $curlHandle , CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt( $curlHandle , CURLOPT_TIMEOUT, $timeout );
+        $result = curl_exec( $curlHandle );
+        curl_close( $curlHandle );
+        return $result;
     }
 }
