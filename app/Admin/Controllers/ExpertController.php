@@ -216,16 +216,16 @@ class ExpertController extends Controller
 
             $form->saved(function (Form $form) {
                 if($form->model()->mp_img_url && false === strpos($form->model()->mp_img_url,'http')){
-                    $form->model()->mp_img_url = env('APP_URL') .  '/uploads/'.$form->model()->mp_img_url;
+                    $form->model()->mp_img_url = env('APP_URL') .$form->model()->mp_img_url;
                 }
                 if($form->model()->wx_qrcode && false === strpos($form->model()->wx_qrcode,'http')){
-                    $form->model()->wx_qrcode = env('APP_URL') .  '/uploads/'.$form->model()->wx_qrcode;
+                    $form->model()->wx_qrcode = env('APP_URL') .$form->model()->wx_qrcode;
                 }
                 if($form->model()->mp_qrcode && false === strpos($form->model()->mp_qrcode,'http')){
-                    $form->model()->mp_qrcode = env('APP_URL') .  '/uploads/'.$form->model()->mp_qrcode;
+                    $form->model()->mp_qrcode = env('APP_URL') .$form->model()->mp_qrcode;
                 }
                 if($form->model()->exp_bg_url && false === strpos($form->model()->exp_bg_url,'http')){
-                    $form->model()->exp_bg_url = env('APP_URL') .  '/uploads/'.$form->model()->exp_bg_url;
+                    $form->model()->exp_bg_url = env('APP_URL') .$form->model()->exp_bg_url;
                 }
 
                 $form->model()->save();
