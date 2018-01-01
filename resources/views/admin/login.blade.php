@@ -54,10 +54,10 @@
         <input type="password" class="form-control" placeholder="{{ trans('admin.password') }}" name="password">
         <!--span class="glyphicon glyphicon-lock form-control-feedback"></span-->
       </div>
-      <div class="row">
+      <div class="row" style="margin-top: 50px;">
 
         <!-- /.col -->
-        <div class="col-xs-4 col-md-offset-4">
+        <div>
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
           <button type="submit" class="btn btn-primary btn-block btn-flat">{{ trans('admin.login') }}</button>
         </div>
@@ -69,7 +69,16 @@
   <!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
-
+<div style="position:fixed;bottom: 0; text-align: center; font-size: 12px; color: #fff;width:100%;">
+  <div class="login-box-footer">
+    <div>
+      本站所有文章、数据仅供参考，使用前务请仔细阅读法律声明，风险自负<br>
+      《中华人民共和国增值电信业务经营许可证》编号：闽 B2-20050010 号<br>
+      《电子公告服务许可证》编号：闽通信互联网 [2008]1 号
+    </div>
+    <div> Copyright  2003-2017 中金在线. All Right Reserved.</div>
+  </div>
+</div>
 <!-- jQuery 2.1.4 -->
 <script src="{{ admin_asset("/vendor/laravel-admin/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js")}} "></script>
 <!-- Bootstrap 3.3.5 -->
