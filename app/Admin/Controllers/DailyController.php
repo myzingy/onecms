@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Extensions\ExcelExpoter;
 use App\Models\Daily;
 
 use Encore\Admin\Form;
@@ -97,7 +98,8 @@ class DailyController extends Controller
             });
             $grid->disableRowSelector();
             //disableExport
-            $grid->disableExport();
+            //$grid->disableExport();
+            $grid->exporter(new ExcelExpoter());
             //disableCreation
             $grid->disableCreation();
             // filter($callback)方法用来设置表格的简单搜索框
@@ -106,7 +108,7 @@ class DailyController extends Controller
                 $filter->useModal();
                 // 禁用id查询框
                 $filter->disableIdFilter();
-                $filter->equal('date', '日期')->date();
+                $filter->between('date', '日期')->date();
                 // 关系查询，查询对应关系`profile`的字段
                 $filter->where(function ($query) {
                     $input = $this->input;

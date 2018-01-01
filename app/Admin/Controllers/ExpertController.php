@@ -94,11 +94,15 @@ class ExpertController extends Controller
             }
             if(Auth::isAdministrator() || Auth::isManager()){
                 $grid->actions(function ($actions) {
-                    $actions->disableDelete();
+
                     $actions->disableEdit();
-                    $actions->append('<a href="/admin/lecturer/users/'.$actions->getKey().'/edit?">编辑</a>');
-                    $actions->append(' | ');
-                    $actions->append('<a href="/admin/lecturer/publicity/create?id='.$actions->getKey().'">推荐</a>');
+                    $actions->prepend('<a href="/admin/lecturer/users/'.$actions->getKey().'/edit?">编辑</a>');
+                    $actions->prepend(' | ');
+                    $actions->prepend('<a href="/admin/lecturer/publicity/create?id='.$actions->getKey().'">推荐</a>');
+
+                    if(Auth::isManager()){
+                        $actions->disableDelete();
+                    }
                 });
 
             }
@@ -173,10 +177,13 @@ class ExpertController extends Controller
                 if(Auth::isAdministrator()){
                     $form->text('openid', 'openID');
                     $form->text('unionid', 'unionId');
+                    $form->text('entry_url', '微信端地址');
 //                    $form->text('openid_mini', 'openId mini');
+
                 }else{
                     $form->display('openid', 'openID');
                     $form->display('unionid', 'unionId');
+                    $form->display('entry_url', '微信端地址');
                 }
 
                 //公众号信息
