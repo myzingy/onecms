@@ -215,8 +215,7 @@ class ExpertController extends Controller
             //服务方式
             $form->radio('svc_type','服务方式')->options(ExpertApplication::$svcTypeOptions);
             $form->display('expid', '分享地址')->with(function ($expid) {
-                return '<div style="width: 100%;word-break: break-all;"><a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/expert/expid/'
-                    .$expid.'&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect">https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/expert/expid/'
+                return '<div style="width: 100%;word-break: break-all;"><a href="#">https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/expert/entry/'
                     .$expid.'&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect</a>
                     </div>';
             });
