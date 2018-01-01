@@ -46,6 +46,8 @@ class Expert extends Model
                 'username' => $info['mobile'],
                 'name' => $info['real_name'],
                 'password' => bcrypt('123456'),
+                'created_at'=>date('Y-m-d H:i:s',time()),
+                'updated_at'=>date('Y-m-d H:i:s',time()),
             ]);
         $res = $user_id && DB::table('admin_role_users')->insert(
                 [
