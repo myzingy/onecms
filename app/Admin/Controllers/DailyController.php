@@ -79,11 +79,19 @@ class DailyController extends Controller
             }
             $grid->expid('讲师ID')->sortable();
             $grid->column('expert.real_name','讲师姓名');
-            $grid->fee_total('本日收入');
+            $grid->fee_total('本日收入')->display(function ($fee) {
+                return $fee/100;
+            });
             $grid->date('日期');
-            $grid->fee_refund('退款申请金额');
-            $grid->fee_due('结算收入');
-            $grid->fee_owe('未结清金额');
+            $grid->fee_refund('退款申请金额')->display(function ($fee) {
+                return $fee/100;
+            });
+            $grid->fee_due('结算收入')->display(function ($fee) {
+                return $fee/100;
+            });
+            $grid->fee_owe('未结清金额')->display(function ($fee) {
+                return $fee/100;
+            });
             $grid->column('state','结算状态')->display(function ($state) {
                 return Daily::STATE[$state];
             });

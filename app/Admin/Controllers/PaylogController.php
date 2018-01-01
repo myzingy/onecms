@@ -84,7 +84,9 @@ class PaylogController extends Controller
             $grid->column('expert.real_name','讲师姓名');
             $grid->column('question.asker_name','提问者');
             $grid->column('question.question','问题');
-            $grid->fee('金额');
+            $grid->fee('金额')->display(function ($fee) {
+                return $fee/100;
+            });
             $grid->timestamp('时间');
             $grid->column('state','支付状态')->display(function ($state) {
                 return Paylog::getStateStr($state);
