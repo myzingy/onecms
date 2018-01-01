@@ -20,6 +20,7 @@ class Refund extends AbstractDisplayer
 
 $('.paylog-refund').unbind('click').click(function() {
     var id = $(this).data('id');
+    var ajax=true;
     swal({
           title: "确认退款吗",
           type: "warning",
@@ -30,6 +31,8 @@ $('.paylog-refund').unbind('click').click(function() {
           cancelButtonText: "取 消"
         },
         function(){
+            if(!ajax) return;
+             ajax=false;
             $.ajax({
                 method: 'post',
                 url: '{$this->getResource()}/' + id+'/edit?act=refund',
