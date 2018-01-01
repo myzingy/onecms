@@ -107,6 +107,9 @@ class PaylogController extends Controller
             $grid->fee('金额')->display(function ($fee) {
                 return $fee/100;
             });
+            $grid->svc_type('类型')->display(function ($svc_type) {
+                return $svc_type==Paylog::SVC_TYPE_SEE?'查 看':'提 问';
+            });
             $grid->timestamp('时间');
             $grid->column('state','支付状态')->display(function ($state) {
                 return Paylog::getStateStr($state);

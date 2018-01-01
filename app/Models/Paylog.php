@@ -18,6 +18,10 @@ class Paylog extends Model
         self::STATE_YTK=>'已退款',
         self::STATE_TSB=>'退款失败',
     ];
+
+    const SVC_TYPE_QUE=0;  //提问
+    const SVC_TYPE_SEE=1;  //查看
+
     protected $table = 'paylog';
     protected $primaryKey = 'payid';
     public $timestamps = false;
