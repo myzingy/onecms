@@ -173,7 +173,7 @@ class ExpertController extends Controller
                 $form->text('mobile', '手机号')->rules('required|numeric|min:6');
                 $form->text('qq', 'QQ');
                 // $form->text('wx_qrcode', '微信二维码');
-                $form->image('wx_qrcode','微信二维码');
+                $form->image('wx_qrcode','微信二维码')->uniqueName();
                 if(Auth::isAdministrator()){
                     $form->text('openid', 'openID');
                     $form->text('unionid', 'unionId');
@@ -188,9 +188,9 @@ class ExpertController extends Controller
 
                 //公众号信息
                 $form->text('mp_name', '公众号名称');
-                $form->image('mp_img_url', '公众号图片');
+                $form->image('mp_img_url', '公众号图片')->uniqueName();
                 //$form->text('mp_qrcode', '公众号二维码');
-                $form->image('mp_qrcode','公众号二维码');
+                $form->image('mp_qrcode','公众号二维码')->uniqueName();
                 $form->text('mp_appid', '公众号AppId');
                 $form->text('mp_secret', '公众号Secret');
                 $form->text('share_ratio', '分成比例');
@@ -203,8 +203,8 @@ class ExpertController extends Controller
 
             }
 
-            $form->editor('exp_intro', '讲师介绍');
-            $form->image('exp_bg_url', '背景图');
+            $form->textarea('exp_intro', '讲师介绍');
+            $form->image('exp_bg_url', '背景图')->uniqueName();
 //            ->rules('dimensions:min_width=100,min_height=200,max_width=500,max_height=1000',[
 //                'dimensions' => '图片有效长宽为：100x200至500x1000',
 //            ]);
@@ -216,16 +216,16 @@ class ExpertController extends Controller
 
             $form->saved(function (Form $form) {
                 if($form->model()->mp_img_url && false === strpos($form->model()->mp_img_url,'http')){
-                    $form->model()->mp_img_url = env('APP_URL') .$form->model()->mp_img_url;
+                    $form->model()->mp_img_url = config('filesystems.disks.admin.url') .'/'.$form->model()->mp_img_url;
                 }
                 if($form->model()->wx_qrcode && false === strpos($form->model()->wx_qrcode,'http')){
-                    $form->model()->wx_qrcode = env('APP_URL') .$form->model()->wx_qrcode;
+                    $form->model()->wx_qrcode = config('filesystems.disks.admin.url') .'/'.$form->model()->wx_qrcode;
                 }
                 if($form->model()->mp_qrcode && false === strpos($form->model()->mp_qrcode,'http')){
-                    $form->model()->mp_qrcode = env('APP_URL') .$form->model()->mp_qrcode;
+                    $form->model()->mp_qrcode = config('filesystems.disks.admin.url') .'/'.$form->model()->mp_qrcode;
                 }
                 if($form->model()->exp_bg_url && false === strpos($form->model()->exp_bg_url,'http')){
-                    $form->model()->exp_bg_url = env('APP_URL') .$form->model()->exp_bg_url;
+                    $form->model()->exp_bg_url = config('filesystems.disks.admin.url') .'/'.$form->model()->exp_bg_url;
                 }
 
                 $form->model()->save();
