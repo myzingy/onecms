@@ -193,6 +193,7 @@ class ExpertController extends Controller
                 $form->image('mp_qrcode','公众号二维码');
                 $form->text('mp_appid', '公众号AppId');
                 $form->text('mp_secret', '公众号Secret');
+                $form->text('share_ratio', '分成比例');
                 $form->radio('mp_auth', '是否认证')->options(Expert::$enableOptions);
                 $form->text('mp_verify_file_url', 'js安全域名');//->rules('url');
                 if(Auth::isAdministrator()){
@@ -213,7 +214,22 @@ class ExpertController extends Controller
             //服务方式
             $form->radio('svc_type','服务方式')->options(ExpertApplication::$svcTypeOptions);
 
+            $form->saved(function (Form $form) {
+                if($form->model()->mp_img_url && false === strpos($form->model()->mp_img_url,'http')){
+                    $form->model()->mp_img_url = env('APP_URL') .  '/uploads/'.$form->model()->mp_img_url;
+                }
+                if($form->model()->wx_qrcode && false === strpos($form->model()->wx_qrcode,'http')){
+                    $form->model()->wx_qrcode = env('APP_URL') .  '/uploads/'.$form->model()->wx_qrcode;
+                }
+                if($form->model()->mp_qrcode && false === strpos($form->model()->mp_qrcode,'http')){
+                    $form->model()->mp_qrcode = env('APP_URL') .  '/uploads/'.$form->model()->mp_qrcode;
+                }
+                if($form->model()->exp_bg_url && false === strpos($form->model()->exp_bg_url,'http')){
+                    $form->model()->exp_bg_url = env('APP_URL') .  '/uploads/'.$form->model()->exp_bg_url;
+                }
 
+                $form->model()->save();
+            });
         });
     }
 }
