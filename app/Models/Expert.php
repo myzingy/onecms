@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 class Expert extends Model
@@ -10,6 +11,7 @@ class Expert extends Model
     protected $table = 'expert';
     protected $primaryKey = 'expid';
     public $timestamps = false;
+    use SoftDeletes;
 
     const ENABLE = 1;
     const DISABLE = 0;

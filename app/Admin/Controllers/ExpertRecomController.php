@@ -135,7 +135,7 @@ class ExpertRecomController extends Controller
                 return $url ? "<img width='80px' src='$url' />" : '';
             });
             $form->display('expert.price_ask', '提问金额');
-            $form->textarea('desc', '简介')->rows(5);
+            $form->textarea('desc', '简介')->rows(5)->rules('required');
             $form->text('weight', '排序权值')->rules('required|numeric');
 
         });
