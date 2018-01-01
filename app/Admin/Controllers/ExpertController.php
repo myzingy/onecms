@@ -203,7 +203,9 @@ class ExpertController extends Controller
             }
 
             $form->textarea('exp_intro', '讲师介绍');
-            $form->image('exp_bg_url', '背景图')->uniqueName();
+            if(Auth::isAdministrator() || Auth::isManager()) {
+                $form->image('exp_bg_url', '背景图')->uniqueName();
+            }
 //            ->rules('dimensions:min_width=100,min_height=200,max_width=500,max_height=1000',[
 //                'dimensions' => '图片有效长宽为：100x200至500x1000',
 //            ]);
