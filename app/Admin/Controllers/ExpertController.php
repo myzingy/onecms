@@ -177,13 +177,12 @@ class ExpertController extends Controller
                 if(Auth::isAdministrator()){
                     $form->text('openid', 'openID');
                     $form->text('unionid', 'unionId');
-                    $form->text('entry_url', '微信端地址');
 //                    $form->text('openid_mini', 'openId mini');
 
                 }else{
                     $form->display('openid', 'openID');
                     $form->display('unionid', 'unionId');
-                    $form->display('entry_url', '微信端地址');
+
                 }
 
                 //公众号信息
@@ -213,6 +212,12 @@ class ExpertController extends Controller
             $form->text('max_question', '每日提问上限')->rules('required|numeric|min:0');
             //服务方式
             $form->radio('svc_type','服务方式')->options(ExpertApplication::$svcTypeOptions);
+            $form->display('expid', '分享地址')->with(function ($expid) {
+                return '<div style="width: 100%;word-break: break-all;"><a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/expert/expid/'
+                    .$expid.'&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect">https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/expert/expid/'
+                    .$expid.'&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect</a>
+                    </div>';
+            });
 
             $form->saved(function (Form $form) {
                 if($form->model()->mp_img_url && false === strpos($form->model()->mp_img_url,'http')){
