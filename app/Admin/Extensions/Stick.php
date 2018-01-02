@@ -15,8 +15,10 @@ class Stick extends AbstractDisplayer
     public function display()
     {
         $script = <<<SCRIPT
-
+var flag=true;
 $('.question-stick').unbind('click').click(function() {
+    if(!flag) return;
+    flag=false;
     toastr.success('操作成功');
     var id = $(this).data('id');
     $.ajax({
@@ -27,6 +29,7 @@ $('.question-stick').unbind('click').click(function() {
             _token:LA.token,
         },
         success: function (data) {
+            flag=true;
             $.pjax.reload('#pjax-container');
 
             if (typeof data === 'object') {
@@ -36,6 +39,9 @@ $('.question-stick').unbind('click').click(function() {
                     swal(data.message, '', 'error');
                 }
             }
+        },
+        error:function(){
+            flag=true;    
         }
     });
 });

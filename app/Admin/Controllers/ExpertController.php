@@ -175,6 +175,7 @@ class ExpertController extends Controller
                 // $form->text('wx_qrcode', '微信二维码');
                 $form->image('wx_qrcode','微信二维码')->uniqueName();
                 if(Auth::isAdministrator()){
+                    $form->text('wx_id', '微信号');
                     $form->text('openid', 'openID');
                     $form->text('unionid', 'unionId');
 //                    $form->text('openid_mini', 'openId mini');

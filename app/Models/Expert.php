@@ -60,7 +60,7 @@ class Expert extends Model
         $data = array_merge($data, [
             'expid' => $user_id,
             'state' => Expert::ENABLE,
-            'share_ratio' => 0.6,
+            'share_ratio' => 60,
             'price_ask' => 100,
             'price_see' => 88,
             'max_question' => 0,

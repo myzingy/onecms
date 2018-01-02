@@ -128,7 +128,7 @@ class StatisticsController extends Controller
             $grid->fee_refund('当日退款')->display(function ($fee) {
                 return $fee/100;
             });
-            $grid->fee_due('自动结算')->display(function ($fee) {
+            $grid->fee_due('自动结算(支付大V)')->display(function ($fee) {
                 return $fee/100;
             });
             $grid->fee_owe('手动结算')->display(function ($fee) {
@@ -137,7 +137,7 @@ class StatisticsController extends Controller
             $grid->fee_money('平台收入')->display(function ($fee) {
                 return $fee/100;
             });
-            $grid->disableExport();
+            //$grid->disableExport();
             $grid->disableRowSelector();
             $grid->disableCreation();
             $grid->disableActions();

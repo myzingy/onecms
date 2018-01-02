@@ -99,13 +99,16 @@ class PaylogController extends Controller
             }
             $grid->model()->where('state','<>',Paylog::STATE_WZF);
 
-            $grid->model()->with(['question','expert']);
+            $grid->model()->with(['question','expert','mpuser']);
             $grid->model()->orderBy('payid', 'desc');
             $grid->payid('ID')->sortable();
             $grid->openid('OPENID');
+            $grid->column('mpuser.nickname','昵称');
             $grid->column('expert.real_name','讲师姓名');
             $grid->column('question.asker_name','提问者');
-            $grid->column('question.question','问题');
+            $grid->column('question.question','问题')->display(function ($que){
+                return '<div style="max-width:500px;">'.$que.'</div>';
+            });
             $grid->fee('金额')->display(function ($fee) {
                 return $fee/100;
             });

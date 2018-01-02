@@ -134,7 +134,9 @@ class QuestionController extends Controller
             });
             $grid->pinned_time('置顶')->stick();
 
-            $grid->disableRowSelector();
+            if(!Admin::user()->isRole('administrator') && !Admin::user()->isRole('manager')) {
+                $grid->disableRowSelector();
+            }
             //disableExport
             $grid->disableExport();
 
