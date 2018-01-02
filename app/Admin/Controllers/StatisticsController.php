@@ -137,6 +137,7 @@ class StatisticsController extends Controller
             $grid->fee_money('平台收入')->display(function ($fee) {
                 return $fee/100;
             });
+            $grid->disableExport();
             $grid->disableRowSelector();
             $grid->disableCreation();
             $grid->disableActions();
