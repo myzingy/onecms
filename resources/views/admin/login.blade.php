@@ -24,9 +24,7 @@
 </head>
 <body class="hold-transition login-page" style="background-color:#86654d;">
 <div class="login-box">
-  <div class="login-logo">
-    <a href="{{ admin_base_path('/') }}"><b>{{config('admin.name')}}</b></a>
-  </div>
+  <div class="login-logo"></div>
   <!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">{{ trans('admin.login') }}</p>
@@ -71,6 +69,7 @@
 <!-- /.login-box -->
 <div style="position:fixed;bottom: 0; text-align: center; font-size: 12px; color: #fff;width:100%;">
   <div class="login-box-footer">
+    <div class="logo"></div>
     <div>
       本站所有文章、数据仅供参考，使用前务请仔细阅读法律声明，风险自负<br>
       《中华人民共和国增值电信业务经营许可证》编号：闽 B2-20050010 号<br>
