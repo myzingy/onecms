@@ -67,7 +67,7 @@
   <!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
-<div style="position:fixed;bottom: 0; text-align: center; font-size: 12px; color: #fff;width:100%;">
+<div style="margin-top: 75px; text-align: center; font-size: 12px; color: #fff;width:100%;">
   <div class="login-box-footer">
     <div class="logo"></div>
     <div>
