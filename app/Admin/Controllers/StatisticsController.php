@@ -120,7 +120,7 @@ class StatisticsController extends Controller
                 $grid->model()->groupBy('date');
                 $grid->date('日期')->sortable();
             }
-
+            $grid->model()->orderBy('date', 'desc');
             $grid->ques_total('问题数量');
             $grid->ques_answered('回答数量');
             $grid->fee_total('总收入')->display(function ($fee) {
