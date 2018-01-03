@@ -103,12 +103,12 @@ class PaylogController extends Controller
             $grid->model()->orderBy('payid', 'desc');
             $grid->payid('ID')->sortable();
             $grid->openid('OPENID');
-            $grid->column('mpuser.nickname','昵称');
-            $grid->column('expert.real_name','讲师姓名');
-            $grid->column('question.asker_name','提问者');
+            $grid->column('mpuser.nickname','提问者昵称');
+            $grid->column('question.asker_name','提问者姓名');
             $grid->column('question.question','问题')->display(function ($que){
                 return '<div style="max-width:500px;">'.$que.'</div>';
             });
+            $grid->column('expert.real_name','讲师姓名');
             $grid->fee('金额')->display(function ($fee) {
                 return $fee/100;
             });
@@ -128,7 +128,6 @@ class PaylogController extends Controller
             //disableCreation
             $grid->disableCreation();
             $grid->disableActions();
-
             // filter($callback)方法用来设置表格的简单搜索框
             $grid->filter(function($filter){
                 // 如果过滤器太多，可以使用弹出模态框来显示过滤器.
@@ -144,12 +143,18 @@ class PaylogController extends Controller
                         $query->where('real_name', 'like', "%{$input}%");
                     });
                 }, '讲师姓名');
+//                $filter->where(function ($query) {
+//                    $input = $this->input;
+//                    $query->whereHas('question', function ($query) use ($input) {
+//                        $query->where('asker_name', 'like', "%{$input}%");
+//                    });
+//                }, '提问者姓名');
                 $filter->where(function ($query) {
                     $input = $this->input;
-                    $query->whereHas('question', function ($query) use ($input) {
-                        $query->where('asker_name', 'like', "%{$input}%");
+                    $query->whereHas('mpuser', function ($query) use ($input) {
+                        $query->where('nickname', 'like', "%{$input}%");
                     });
-                }, '提问者姓名');
+                }, '提问者昵称');
                 $filter->equal('state', '支付状态')->checkbox(Paylog::STATE);
 
             });

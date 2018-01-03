@@ -30,6 +30,7 @@ class DailyController extends Controller
             $content->description('');
 
             $content->body($this->grid());
+            //$content->body(view('admin.grid.total',[3,5,6,7]));
         });
     }
 
@@ -71,13 +72,15 @@ class DailyController extends Controller
     protected function grid()
     {
         return Admin::grid(Daily::class, function (Grid $grid) {
-
+            $grid->paginate(31);
+            $grid->perPages([10, 20, 31, 40, 50]);
             $grid->model()->with(['expert']);
             if(Admin::user()->isRole('lecturer')){
                 $grid->model()->where('expid', '=', Admin::user()->id);
                 $grid->disableActions();
             }
             $grid->expid('讲师ID')->sortable();
+            $grid->column('expert.mp_name','公众号');
             $grid->column('expert.real_name','讲师姓名');
             $grid->fee_total('本日收入')->display(function ($fee) {
                 return $fee/100;
@@ -126,6 +129,11 @@ class DailyController extends Controller
                 }, '讲师姓名');
                 $filter->equal('state', '结算状态')->checkbox(Daily::STATE);
 
+            });
+            $grid->footer(function() use($grid){
+                //\Log::info(json_encode());
+                //$grid->column('fee_total','本日收入');
+                return true;
             });
         });
     }

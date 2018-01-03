@@ -1,6 +1,7 @@
 <?php
 namespace App\Admin\Controllers;
 
+use App\Admin\Extensions\PlatformExpoter;
 use App\Models\Daily;
 use App\Models\Paylog;
 use Encore\Admin\Facades\Admin;
@@ -138,6 +139,7 @@ class StatisticsController extends Controller
                 return $fee/100;
             });
             //$grid->disableExport();
+            $grid->exporter(new PlatformExpoter());
             $grid->disableRowSelector();
             $grid->disableCreation();
             $grid->disableActions();
