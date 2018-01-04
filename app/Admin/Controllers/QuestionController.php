@@ -108,7 +108,7 @@ class QuestionController extends Controller
                 $grid->disableCreation();
             }
             $grid->model()->with(['expert','paylog']);
-            $grid->model()->orderBy('pinned_time', 'desc');
+            //$grid->model()->orderBy('pinned_time', 'desc');
             $grid->model()->orderBy('timestamp', 'desc');
             $grid->qid('ID')->sortable();
             $grid->asker_img_url('头像')->display(function($img){
@@ -132,7 +132,7 @@ class QuestionController extends Controller
             $grid->column('state','问题状态')->display(function ($state) {
                 return Question::getStateStr($state);
             });
-            $grid->pinned_time('置顶')->stick();
+            $grid->pinned_time('置顶')->stick()->sortable();
 
             if(!Admin::user()->isRole('administrator') && !Admin::user()->isRole('manager')) {
                 $grid->disableRowSelector();
