@@ -44,6 +44,8 @@ class DailyController extends Controller
     {
         $m=$this->form()->edit($id)->model();
         $m->state=Daily::STATE_YJQ_MANUAL;
+        $m->fee_due=$m->fee_due+$m->fee_owe;
+        $m->fee_owe=0;
         $m->save();
         return redirect('/admin/daily');
     }
