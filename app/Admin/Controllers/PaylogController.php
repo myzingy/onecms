@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\Auth;
 use App\Models\Paylog;
 
 use Encore\Admin\Form;
@@ -119,7 +120,7 @@ class PaylogController extends Controller
             $grid->column('state','支付状态')->display(function ($state) {
                 return Paylog::getStateStr($state);
             });
-            if(!Admin::user()->isRole('lecturer')){
+            if(Auth::isAdministrator()){
                 $grid->column('state_x','退款')->refund();
             }
             $grid->disableRowSelector();
