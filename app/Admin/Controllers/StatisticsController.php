@@ -3,6 +3,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Extensions\PlatformExpoter;
 use App\Models\Daily;
+use App\Models\Daily2017;
 use App\Models\Paylog;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
@@ -198,11 +199,74 @@ class StatisticsController extends Controller
     }
     public function lecturer(){
         return Admin::content(function (Content $content) {
+            $content->header('历史统计');
+            $content->description('');
 
-            $content->header('header');
-            $content->description('description');
-            $content->body(view('admin.echarts.bar'));
+            $tab = new Tab();
+            $tab->add('报表', $this->setTabTableHistory());
+            //$tab->add('图表', view('admin.echarts.bar'));
+            $this->setTodayStatHistory($content);
+            $content->body($tab->render());
         });
+    }
+    private function setTabTableHistory(){
+        return Admin::grid(Daily2017::class, function (Grid $grid) {
+            $grid->model()->orderBy('date', 'desc');
+            $grid->mp_name('公众号');
+            $grid->date('收益日期')->sortable();
+            $grid->name('收款人');
+            $grid->fee('金额');
+            $grid->pay_time('支付时间')->display(function ($fee) {
+                return ($fee>0)?$fee:'';
+            });
+            $grid->pay_method('支付方式');
+            $grid->disableExport();
+            //$grid->exporter(new PlatformExpoter());
+            $grid->disableRowSelector();
+            $grid->disableCreation();
+            $grid->disableActions();
+            $grid->filter(function($filter){
+                // 如果过滤器太多，可以使用弹出模态框来显示过滤器.
+                //$filter->useModal();
+                // 禁用id查询框
+                $filter->disableIdFilter();
+                $filter->between('date', '日期')->date();
+                $filter->equal('name', '收款人');
+                $filter->equal('mp_name', '公众号');
+                /*
+                $filter->where(function ($query){
+
+                },'统计')->radio([
+                    ''   => '按日',
+                    1    => '按周',
+                    2    => '按月',
+                ]);
+                */
+            });
+        });
+    }
+    private function setTodayStatHistory($content){
+
+        //Daily::find()->where()->all();
+        $content->row(function (Row $row) {
+            $paylog=new Daily2017();
+            $total=$paylog->sum('fee');
+            $totalBox = new InfoBox('总收益', 'money', 'blue', 'javascript://', number_format($total,2));
+
+            $totalP=$paylog->where(['pay_method'=>'平台'])->sum('fee');
+            $totalPBox = new InfoBox('平台收益', 'money', 'green', 'javascript://', number_format($totalP,2));
+
+
+            $totalEBox = new InfoBox('讲师收益', 'money', 'yellow', 'javascript://', number_format($total-$totalP,2));
+
+
+
+            $row->column(4, $totalBox->render());
+            $row->column(4, $totalEBox->render());
+            $row->column(4, $totalPBox->render());
+        });
+
+
     }
 
 }
