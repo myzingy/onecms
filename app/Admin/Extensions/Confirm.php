@@ -41,7 +41,7 @@ $('.grid-row-confirm').unbind('click').click(function() {
         function(){
             $.ajax({
                 method: 'post',
-                url: '{$this->url}',
+                url: '{$this->url}'.replace('{id}',id),
                 data: {
                     _method:'get',
                     _token:LA.token,

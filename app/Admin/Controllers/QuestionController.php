@@ -50,6 +50,7 @@ class QuestionController extends Controller
         if($act=='refuse'){//拒绝
             //$m=$this->form()->edit($id)->model();
             $qm=Question::with(['paylog'])->find($id);
+            return $qm;
             $qm->state=Question::STATE_YJJ;
             $qm->save();
             if($qm->paylog && $qm->paylog->state==Paylog::STATE_YZF){
@@ -152,7 +153,7 @@ class QuestionController extends Controller
                 $actions->disableEdit();
                 // append一个操作
                 if($actions->row->state==Question::STATE_WHD){
-                    $actions->prepend(new Confirm($actions->getKey(),'拒 绝','确认拒绝答复？','/admin/question/'.$actions->getKey().'/edit?act=refuse'));
+                    $actions->prepend(new Confirm($actions->getKey(),'拒 绝','确认拒绝答复？','/admin/question/{id}/edit?act=refuse'));
                     $actions->prepend(' | ');
                     $actions->prepend('<a href="/admin/question/'.$actions->getKey().'/edit?act=answer">回 答</a>');
 
