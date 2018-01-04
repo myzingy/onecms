@@ -131,10 +131,8 @@ class DailyController extends Controller
                 $filter->equal('state', '结算状态')->checkbox(Daily::STATE);
 
             });
-            $grid->footer(function() use($grid){
-                //\Log::info(json_encode());
-                //$grid->column('fee_total','本日收入');
-                return true;
+            $grid->footer(function(){
+                echo view('admin.grid.total',['total'=>'[3,5,6,7]']);
             });
         });
     }

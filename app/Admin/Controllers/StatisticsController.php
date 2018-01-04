@@ -100,6 +100,8 @@ class StatisticsController extends Controller
     }
     private function setTabTable(){
         return Admin::grid(Daily::class, function (Grid $grid) {
+            $grid->paginate(31);
+            $grid->perPages([10, 20, 31, 40, 50]);
             $grid->model()->select(
                 DB::raw('`date`,sum(ques_total) as ques_total'
                 .',sum(ques_answered) as ques_answered'
@@ -160,6 +162,9 @@ class StatisticsController extends Controller
                 ]);
                 */
             });
+            $grid->footer(function(){
+                echo view('admin.grid.total',['total'=>'[1,2,3,4,5,6,7]']);
+            });
         });
     }
     private function setTodayStat($content){
@@ -175,7 +180,7 @@ class StatisticsController extends Controller
                 ->where('state',Paylog::STATE_YZF)
                 ->sum('fee');
             //print_r(DB::getQueryLog());
-            $infoBoxToday = new InfoBox('今日 分成收入/流水收入', 'money', 'aqua', 'javascript://', ''.(($fee/100)*0.4).' / '.($fee/100));
+            $infoBoxToday = new InfoBox('今日 分成收入/流水收入', 'money', 'aqua', 'javascript://', ''.number_format(($fee/100)*0.4,2).' / '.number_format($fee/100,2));
             //daily
             //print_r(DB::getQueryLog());
             $daily=new Daily();
@@ -190,7 +195,7 @@ class StatisticsController extends Controller
                     )
             )->first();
 
-            $infoBoxAll = new InfoBox('历史 分成收入/流水收入', 'money', 'green', 'javascript://', ''.($feex->fee_money/100).' / '.($feex->fee_total/100));
+            $infoBoxAll = new InfoBox('历史 分成收入/流水收入', 'money', 'green', 'javascript://', ''.number_format($feex->fee_money/100,2).' / '.number_format($feex->fee_total/100,2));
             $row->column(6, $infoBoxToday->render());
             $row->column(6, $infoBoxAll->render());
         });
@@ -211,6 +216,8 @@ class StatisticsController extends Controller
     }
     private function setTabTableHistory(){
         return Admin::grid(Daily2017::class, function (Grid $grid) {
+            $grid->paginate(31);
+            $grid->perPages([10, 20, 31, 40, 50]);
             $grid->model()->orderBy('date', 'desc');
             $grid->mp_name('公众号');
             $grid->date('收益日期')->sortable();
@@ -242,6 +249,9 @@ class StatisticsController extends Controller
                     2    => '按月',
                 ]);
                 */
+            });
+            $grid->footer(function(){
+                echo view('admin.grid.total',['total'=>'[3]']);
             });
         });
     }
