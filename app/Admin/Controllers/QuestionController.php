@@ -55,12 +55,12 @@ class QuestionController extends Controller
             if($qm->paylog && $qm->paylog->state==Paylog::STATE_YZF){
                 return redirect('/admin/paylog/'.$qm->paylog->payid.'/edit?act=refund');
             }
-            return redirect('/admin/question');
+            return $qm;
         }elseif ($act=='stick'){//置顶
             $m=$this->form()->edit($id)->model();
             $m->pinned_time=$m->pinned_time>$m->timestamp?$m->timestamp:date('Y-m-d H:i:s',time());
             $m->save();
-            return redirect('/admin/question');
+            return $m;
         }elseif ($act=='answer'){
             return Admin::content(function (Content $content) use ($id) {
 

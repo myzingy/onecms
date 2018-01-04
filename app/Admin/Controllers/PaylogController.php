@@ -59,7 +59,7 @@ class PaylogController extends Controller
                 $m->save();
                 throw new \Exception('退款失败');
             }
-            return redirect('/admin/question');
+            return $m;
         }
         return Admin::content(function (Content $content) use ($id) {
 
