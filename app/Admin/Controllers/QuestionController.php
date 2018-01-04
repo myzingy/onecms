@@ -50,7 +50,6 @@ class QuestionController extends Controller
         if($act=='refuse'){//拒绝
             //$m=$this->form()->edit($id)->model();
             $qm=Question::with(['paylog'])->find($id);
-            return $qm;
             $qm->state=Question::STATE_YJJ;
             $qm->save();
             if($qm->paylog && $qm->paylog->state==Paylog::STATE_YZF){
