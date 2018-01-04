@@ -44,7 +44,7 @@ class PaylogController extends Controller
         //refuse
         if($act=='refund'){//退款
             $m=$this->form()->edit($id)->model();
-            if($m->state!=Paylog::STATE_YZF) throw new \Exception('不允许再次操作');
+            if($m->state!=Paylog::STATE_YZF) throw new \Exception('未支付或已退款');
             $m->state=Paylog::STATE_YTK;
             $m->save();
             $url='http://dv.cnfol.com/refund/refund?tradeno='

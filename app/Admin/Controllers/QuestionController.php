@@ -48,9 +48,13 @@ class QuestionController extends Controller
         $act=Input::get('act','');
         //refuse
         if($act=='refuse'){//拒绝
-            $m=$this->form()->edit($id)->model();
-            $m->state=Question::STATE_YJJ;
-            $m->save();
+            //$m=$this->form()->edit($id)->model();
+            $qm=Question::with(['paylog'])->find($id);
+            $qm->state=Question::STATE_YJJ;
+            $qm->save();
+            if($qm->paylog && $qm->paylog->state==Paylog::STATE_YZF){
+                return redirect('/admin/paylog/'.$qm->paylog->payid.'/edit?act=refund');
+            }
             return redirect('/admin/question');
         }elseif ($act=='stick'){//置顶
             $m=$this->form()->edit($id)->model();

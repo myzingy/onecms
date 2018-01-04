@@ -17,10 +17,19 @@ class Stick extends AbstractDisplayer
         $script = <<<SCRIPT
 var flag=true;
 $('.question-stick').unbind('click').click(function() {
-    if(!flag) return;
+    if(!flag) {
+        toastr.warning('操作太快，请稍等一会');
+        return;
+    }
     flag=false;
-    toastr.success('操作成功');
+    //toastr.success('操作成功');
     var id = $(this).data('id');
+    var name=$.trim($(this).text());
+    if(name=='已置顶'){
+        $(this).text('未置顶').attr('class','btn btn-warning question-stick').attr('title','未置顶,点击置顶');        
+    }else{
+        $(this).text('已置顶').attr('class','btn btn-danger question-stick').attr('title','已置顶,点击取消');
+    }
     $.ajax({
         method: 'post',
         url: '{$this->getResource()}/' + id+'/edit?act=stick',
