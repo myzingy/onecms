@@ -18,6 +18,7 @@ use Encore\Admin\Widgets\InfoBox;
 class StatisticsController extends Controller
 {
     use ModelForm;
+    private $EchartsData=[];
 
     /**
      * Index interface.
@@ -93,7 +94,7 @@ class StatisticsController extends Controller
 
             $tab = new Tab();
             $tab->add('报表', $this->setTabTable());
-            //$tab->add('图表', view('admin.echarts.bar'));
+            $tab->add('图表', view('admin.echarts.bar'));
             $this->setTodayStat($content);
             $content->body($tab->render());
         });
@@ -110,15 +111,23 @@ class StatisticsController extends Controller
                     .',sum(fee_due) as fee_due'
                     .',sum(fee_owe) as fee_owe'
                     .',(sum(fee_total)-sum(fee_due)-sum(fee_owe)-sum(fee_refund)) as fee_money'
-                    .',substring(`date`,-10,7) as `month`')
+                    .',substring(`date`,-10,7) as `month`'
+                    .",DATE_FORMAT(`date`,'%Y年第%u周') weeks"
+                )
+
             );
-            $group=Input::get('4be929919c7d154229912f4bbc2df624','');
+            $group='';
+            foreach (Input::get() as $qu=>$val){
+                if(strlen($qu)==32){
+                    $group=$val;
+                }
+            }
             if($group==1){
-                $grid->model()->groupBy('date');
-                $grid->date('日期')->sortable();
+                $grid->model()->groupBy(DB::raw("DATE_FORMAT(`date`,'%Y%u')"));
+                $grid->weeks('按周日期')->sortable();
             }elseif ($group==2){
-                $grid->model()->groupBy(DB::raw('substring(`date`,-10,7)'));
-                $grid->month('日期')->sortable();
+                $grid->model()->groupBy(DB::raw('substring(`daily`.`date`,-10,7)'));
+                $grid->month('按月日期')->sortable();
             }else{
                 $grid->model()->groupBy('date');
                 $grid->date('日期')->sortable();
@@ -152,7 +161,7 @@ class StatisticsController extends Controller
                 // 禁用id查询框
                 $filter->disableIdFilter();
                 $filter->between('date', '日期')->date();
-                /*
+
                 $filter->where(function ($query){
 
                 },'统计')->radio([
@@ -160,9 +169,9 @@ class StatisticsController extends Controller
                     1    => '按周',
                     2    => '按月',
                 ]);
-                */
+
             });
-            $grid->footer(function(){
+            $grid->footer(function() use($grid){
                 echo view('admin.grid.total',['total'=>'[1,2,3,4,5,6,7]']);
             });
         });
