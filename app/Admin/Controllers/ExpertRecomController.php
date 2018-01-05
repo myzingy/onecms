@@ -107,7 +107,7 @@ class ExpertRecomController extends Controller
             $grid->expid('讲师ID');
             $grid->column('expert.real_name','讲师名');
             $grid->column('expert.mp_name','公众号');
-            $grid->column('desc','简介');
+            $grid->column('desc','简介')->style('max-width:500px;');
 //            $grid->desc('描述')->sortable();
             if (!Auth::isAdmin()) {
                 $grid->weight('权重');
