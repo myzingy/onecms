@@ -24,15 +24,40 @@ class WangEditor extends Field
     public function render()
     {
         $name = $this->formatName($this->column);
-
+        $uploadImgUrl = config('wang-editor.uploadImgUrl', '/admin/upload');
+        $token = csrf_token();
         $this->script = <<<EOT
 
 var E = window.wangEditor
 var editor = new E('#{$this->id}');
 editor.customConfig.zIndex = 0
-editor.customConfig.uploadImgShowBase64 = true
+//editor.customConfig.uploadImgShowBase64 = true
+editor.customConfig.uploadImgServer = "{$uploadImgUrl}";
+editor.customConfig.uploadImgMaxSize = 10 * 1024 * 1024
+editor.customConfig.uploadImgMaxLength = 1
+editor.customConfig.uploadImgParams = {
+        _token : '{$token}'
+};
+editor.customConfig.uploadImgHeaders = {
+    'Accept': 'text/x-json'
+}
+editor.customConfig.uploadFileName = 'file';
+
 editor.customConfig.onchange = function (html) {
     $('input[name=$name]').val(html);
+}
+editor.customConfig.customAlert = function (info) {
+    //swal(info, '', 'warning');
+}
+editor.customConfig.uploadImgHooks = {
+    fail: function (xhr, editor, result) {
+        console.log('fail',arguments);
+        swal(result.message, '', 'warning');
+    },
+    error: function (xhr, editor) {
+        console.log('error',arguments);
+        swal(result.message, '', 'warning');
+    },
 }
 editor.create()
 

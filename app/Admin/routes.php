@@ -24,5 +24,7 @@ Route::group([
 
     $router->any('/statistics/platform', 'StatisticsController@platform');
     $router->any('/statistics/lecturer', 'StatisticsController@lecturer');
+
+    $router->any('/upload', 'UploadController@index');
     //$router->resource('/statistics', StatisticsController::class);
 });
