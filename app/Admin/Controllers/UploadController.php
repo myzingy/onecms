@@ -30,7 +30,7 @@ class UploadController extends Controller
                 $realPath = $file->getRealPath();
                 $destPath = 'uploads/content/';
                 $savePath = $destPath.''.date('Ymd', time());
-                is_dir($savePath) || mkdir($savePath,'0777',true);  //如果不存在则创建目录
+                is_dir($savePath) || mkdir($savePath,'777',true);  //如果不存在则创建目录
                 $name = $file->getClientOriginalName();
                 $ext = $file->getClientOriginalExtension();
                 $check_ext = in_array($ext, ['gif', 'jpg', 'jpeg', 'png'], true);
