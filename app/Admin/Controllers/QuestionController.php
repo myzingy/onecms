@@ -51,6 +51,7 @@ class QuestionController extends Controller
             //$m=$this->form()->edit($id)->model();
             $qm=Question::with(['paylog'])->find($id);
             $qm->state=Question::STATE_YJJ;
+            $qm->answer='抱歉，我无法回答您的问题';
             $qm->save();
             if($qm->paylog && $qm->paylog->state==Paylog::STATE_YZF){
                 return redirect('/admin/paylog/'.$qm->paylog->payid.'/edit?act=refund');
