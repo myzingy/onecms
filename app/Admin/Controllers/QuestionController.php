@@ -135,6 +135,9 @@ class QuestionController extends Controller
             });
             $grid->column('expert.real_name','讲师');
             $grid->column('state','问题状态')->display(function ($state) {
+                if($state==Question::STATE_WHD){
+                    return '<span class="label label-danger">'.Question::getStateStr($state).'</span>';
+                }
                 return Question::getStateStr($state);
             });
             $grid->pinned_time('置顶')->stick()->sortable();
@@ -185,7 +188,7 @@ class QuestionController extends Controller
                         $query->where('real_name', 'like', "%{$input}%");
                     });
                 }, '讲师姓名');
-                //$filter->equal('state', '支付状态')->checkbox(Paylog::STATE);
+                $filter->equal('paylog.state', '支付状态')->checkbox(Paylog::STATE);
                 $filter->equal('state', '问题状态')->checkbox(Question::STATE);
 
             });
@@ -232,7 +235,6 @@ class QuestionController extends Controller
         return Admin::form(Question::class, function (Form $form) {
             $form->text('question', '问题');
             $form->editor('answer', '回复');
-            //\Log::info('answer:'.json_encode($form));
             $form->saved(function (Form $form) {
                 //\Log::info('answer-saved:'.json_encode($form));
             });

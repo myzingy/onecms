@@ -1,3 +1,6 @@
+@php
+    $value=strpos($value,'问题尚未回答')>-1?'':$value
+@endphp
 <div class="form-group {!! !$errors->has($label) ?: 'has-error' !!}">
 
     <label for="{{$id}}" class="col-sm-2 control-label">{{$label}}</label>
