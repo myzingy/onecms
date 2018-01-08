@@ -2,6 +2,7 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Extensions\PlatformExpoter;
+use App\Models\Auth;
 use App\Models\Daily;
 use App\Models\Daily2017;
 use App\Models\Paylog;
@@ -144,9 +145,11 @@ class StatisticsController extends Controller
             $grid->fee_due('支付大V结算')->display(function ($fee) {
                 return $fee/100;
             });
-//            $grid->fee_owe('手动结算')->display(function ($fee) {
-//                return $fee/100;
-//            });
+            if(Auth::isAdministrator()) {
+                $grid->fee_owe('手动结算')->display(function ($fee) {
+                    return $fee / 100;
+                });
+            }
             $grid->fee_money('平台收入')->display(function ($fee) {
                 return $fee/100;
             });

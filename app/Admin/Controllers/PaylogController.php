@@ -138,25 +138,27 @@ class PaylogController extends Controller
                 //$filter->equal('timestamp', '时间')->date();
                 $filter->between('timestamp', '时间')->datetime();
                 // 关系查询，查询对应关系`profile`的字段
-                $filter->where(function ($query) {
-                    $input = $this->input;
-                    $query->whereHas('expert', function ($query) use ($input) {
-                        $query->where('real_name', 'like', "%{$input}%");
-                    });
-                }, '讲师姓名');
+//                $filter->where(function ($query) {
+//                    $input = $this->input;
+//                    $query->whereHas('expert', function ($query) use ($input) {
+//                        $query->where('real_name', 'like', "%{$input}%");
+//                    });
+//                }, '讲师姓名');
+                $filter->like('expert.real_name', '讲师姓名');
 //                $filter->where(function ($query) {
 //                    $input = $this->input;
 //                    $query->whereHas('question', function ($query) use ($input) {
 //                        $query->where('asker_name', 'like', "%{$input}%");
 //                    });
 //                }, '提问者姓名');
-                $filter->where(function ($query) {
-                    $input = $this->input;
-                    $query->whereHas('mpuser', function ($query) use ($input) {
-                        $query->where('nickname', 'like', "%{$input}%");
-                    });
-                }, '提问者昵称');
-                $filter->equal('state', '支付状态')->checkbox(Paylog::STATE);
+//                $filter->where(function ($query) {
+//                    $input = $this->input;
+//                    $query->whereHas('mpuser', function ($query) use ($input) {
+//                        $query->where('nickname', 'like', "%{$input}%");
+//                    });
+//                }, '提问者昵称');
+                $filter->like('mpuser.nickname', '提问者昵称');
+                $filter->in('state', '支付状态')->checkbox(Paylog::STATE);
 
             });
         });

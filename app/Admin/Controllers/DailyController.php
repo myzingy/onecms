@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Extensions\ExcelExpoter;
+use App\Models\Auth;
 use App\Models\Daily;
 
 use Encore\Admin\Form;
@@ -95,9 +96,11 @@ class DailyController extends Controller
             $grid->fee_due('结算收入')->display(function ($fee) {
                 return $fee/100;
             });
-            $grid->fee_owe('未结清金额')->display(function ($fee) {
-                return $fee/100;
-            });
+            if(Auth::isAdministrator()) {
+                $grid->fee_owe('未结清金额')->display(function ($fee) {
+                    return $fee / 100;
+                });
+            }
             $grid->column('state','结算状态')->display(function ($state) {
                 return Daily::STATE[$state];
             });
@@ -130,11 +133,15 @@ class DailyController extends Controller
                         $query->where('real_name', 'like', "%{$input}%");
                     });
                 }, '讲师姓名');
-                $filter->equal('state', '结算状态')->checkbox(Daily::STATE);
+                $filter->in('state', '结算状态')->checkbox(Daily::STATE);
 
             });
             $grid->footer(function(){
-                echo view('admin.grid.total',['total'=>'[3,5,6,7]']);
+                if(Auth::isAdministrator()) {
+                    echo view('admin.grid.total', ['total' => '[3,5,6,7]']);
+                }else{
+                    echo view('admin.grid.total', ['total' => '[3,5,6]']);
+                }
             });
         });
     }

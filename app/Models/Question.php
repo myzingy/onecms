@@ -26,7 +26,8 @@ class Question extends Model
     protected $primaryKey = 'qid';
     public function paylog()
     {
-        return $this->hasOne(Paylog::class,'quesid','qid');
+        //return $this->hasOne(Paylog::class,'quesid','qid');
+        return $this->hasMany(Paylog::class,'quesid','qid');
     }
     public function expert()
     {

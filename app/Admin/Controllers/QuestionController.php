@@ -113,6 +113,7 @@ class QuestionController extends Controller
                 $grid->disableCreation();
             }
             $grid->model()->with(['expert','paylog']);
+
             //$grid->model()->orderBy('pinned_time', 'desc');
             $grid->model()->orderBy('timestamp', 'desc');
             $grid->qid('ID')->sortable();
@@ -173,23 +174,26 @@ class QuestionController extends Controller
                 $filter->disableIdFilter();
                 //$filter->equal('timestamp', '时间')->date();
                 //$filter->between('timestamp', '时间')->datetime();
-                $filter->where(function ($query) {
-                    $input = $this->input;
-                    $query->where('asker_name', 'like', "%{$input}%");
-                }, '提问者姓名');
-                $filter->where(function ($query) {
-                    $input = $this->input;
-                    $query->where('question', 'like', "%{$input}%");
-                }, '问题');
-                // 关系查询，查询对应关系`profile`的字段
-                $filter->where(function ($query) {
-                    $input = $this->input;
-                    $query->whereHas('expert', function ($query) use ($input) {
-                        $query->where('real_name', 'like', "%{$input}%");
-                    });
-                }, '讲师姓名');
-                $filter->equal('paylog.state', '支付状态')->checkbox(Paylog::STATE);
-                $filter->equal('state', '问题状态')->checkbox(Question::STATE);
+//                $filter->where(function ($query) {
+//                    $input = $this->input;
+//                    $query->where('asker_name', 'like', "%{$input}%");
+//                }, '提问者姓名');
+//                $filter->where(function ($query) {
+//                    $input = $this->input;
+//                    $query->where('question', 'like', "%{$input}%");
+//                }, '问题');
+//                // 关系查询，查询对应关系`profile`的字段
+//                $filter->where(function ($query) {
+//                    $input = $this->input;
+//                    $query->whereHas('expert', function ($query) use ($input) {
+//                        $query->where('real_name', 'like', "%{$input}%");
+//                    });
+//                }, '讲师姓名');
+                $filter->like('asker_name','提问者姓名');
+                $filter->like('question','问题');
+                $filter->like('expert.real_name','讲师姓名');
+                $filter->in('paylog.state', '支付状态')->checkbox(Paylog::STATE);
+                $filter->in('state', '问题状态')->checkbox(Question::STATE);
 
             });
         });
