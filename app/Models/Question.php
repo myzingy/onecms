@@ -26,8 +26,10 @@ class Question extends Model
     protected $primaryKey = 'qid';
     public function paylog()
     {
-        //return $this->hasOne(Paylog::class,'quesid','qid');
-        return $this->hasMany(Paylog::class,'quesid','qid');
+        return $this->hasOne(Paylog::class,'quesid','qid')->where(function($query){
+            $query->where(['svc_type'=>Paylog::SVC_TYPE_QUE]);
+        });
+        //return $this->hasMany(Paylog::class,'quesid','qid');
     }
     public function expert()
     {
