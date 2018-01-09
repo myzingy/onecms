@@ -14,6 +14,7 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Input;
 
 
@@ -210,7 +211,14 @@ class QuestionController extends Controller
             //\Log::info('form:'.json_encode($form));
             $form->text('question', '问题');
             $form->editor('answer', '回复');
-            $form->saved(function (Form $form) {
+            $this->changed=false;
+            $form->saving(function (Form $form){
+                //...
+                $answer=preg_replace("/<[^>]+>/","",$form->answer);
+                $this->changed=!($form->model()->answer==$form->answer) && $answer;
+                //\Log::info('answer-saving',[$this->changed,$answer,$form->model()->answer,$form->answer]);
+            });
+            $form->saved(function (Form $form){
                 //\Log::info('form-saved:'.$form->model()->asker_openid);
                 if(!$form->model()->asker_openid){
                     $expert=Expert::find(Admin::user()->id);
@@ -230,6 +238,17 @@ class QuestionController extends Controller
                 if($form->model()->answer){
                     $form->model()->state=Question::STATE_YHD;
                     $form->model()->save();
+                    $client=new Client();
+                    \Log::info('answer-saved',[$this->changed,$form->answer,$form->model()->answer]);
+                    if($this->changed){
+                        $response = $client->request('POST', 'http://dv.cnfol.com/ques/ntfuser', [
+                            'form_params' => [
+                                'qid' => $form->model()->qid,
+                            ]
+                        ]);
+                        \Log::info('ntfuser',[$form->model()->qid,$response->getBody()]);
+                    }
+
                 }
             });
         });
