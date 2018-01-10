@@ -199,8 +199,12 @@ class ExpertController extends Controller
                 if(Auth::isAdministrator()){
                     $form->radio('state','状态')->options(Expert::$stateOptions);
                 }
+                $form->text('cfaname', '分析师姓名');
+                $form->text('cfaid', '分析师证件号');
 
-
+            }else{
+                $form->display('cfaname', '分析师姓名');
+                $form->display('cfaid', '分析师证件号');
             }
 
             $form->textarea('exp_intro', '讲师介绍');

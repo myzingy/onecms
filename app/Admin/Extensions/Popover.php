@@ -13,7 +13,7 @@ class Popover extends AbstractDisplayer
         $placement = $param['placement'];
         Admin::script("$('[data-toggle=\"popover\"]').popover({html: true});");
 
-        $image = $this->row[$column] ? "<image width=120 height=120 src='/uploads/".$this->row[$column]."' />" : "";
+        $image = $this->row[$column] ? "<image width=120 height=120 src='".$this->row[$column]."' />" : "";
         $title = '微信二维码';
         if($column=='mp_qrcode'){
             $title = '公众号二维码';
