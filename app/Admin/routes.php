@@ -27,4 +27,7 @@ Route::group([
 
     $router->any('/upload', 'UploadController@index');
     //$router->resource('/statistics', StatisticsController::class);
+
+    $router->resource('/livebc_expert', LivebcExpertController::class);
+    $router->resource('/livebc', LivebcController::class);
 });
