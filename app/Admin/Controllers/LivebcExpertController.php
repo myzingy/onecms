@@ -86,7 +86,7 @@ class LivebcExpertController extends Controller
                         'name'=>$name,
                         'notice'=>'',
                         'fee_bc'=>0,
-                        'state'=>LivebcExpert::STATE_DISABLED
+                        'state'=>LivebcExpert::STATE_ENABLE
                     ]);
                     $LivebcExpert->save();
                 }
@@ -132,10 +132,12 @@ class LivebcExpertController extends Controller
     {
         return Admin::form(LivebcExpert::class, function (Form $form) {
 
-            $form->display('id', 'ID');
+            $form->display('expid', '讲师ID');
 
-            $form->display('created_at', 'Created At');
-            $form->display('updated_at', 'Updated At');
+            $form->text('name', '直播名称');
+            $form->textarea('notice', '直播公告')->rows(10);
+            $form->currency('fee_bc', '直播价格')->symbol('￥');
+            $form->radio('state','是否直播')->options(LivebcExpert::STATE);
         });
     }
 }
