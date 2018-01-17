@@ -89,3 +89,6 @@
 .form-group .box.box-solid.box-default{
     background-color: #efefef;
 }
+.form-horizontal label.control-label[for="inputError"]{
+    color:red;
+}
