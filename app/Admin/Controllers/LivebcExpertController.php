@@ -97,9 +97,7 @@ class LivebcExpertController extends Controller
             $grid->column('name','直播名称');
             $grid->column('fee_bc','直播价格');
             $grid->column('notice','直播公告')->style('max-width:600px;');
-            $grid->column('state','状态')->display(function($state){
-                return LivebcExpert::getStateStr($state);
-            });
+            $grid->state('状态')->select(LivebcExpert::STATE)->style('width:120px;');
             //disableCreation
             $grid->disableCreation();
             //disableExport
@@ -138,6 +136,13 @@ class LivebcExpertController extends Controller
             $form->textarea('notice', '直播公告')->rows(10);
             $form->currency('fee_bc', '直播价格')->symbol('￥');
             $form->radio('state','是否直播')->options(LivebcExpert::STATE);
+            $form->display('expid', '直播地址')->with(function ($expid) {
+                return '<div style="width: 100%;word-break: break-all;">'
+                    .'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/expert/livebc/'
+                    .$expid
+                    .'&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect'
+                    .'<a href="#"></a></div>';
+            });
         });
     }
 }

@@ -83,8 +83,12 @@ class LivebcController extends Controller
             $grid->disableFilter();
             $grid->disablePagination();
             $grid->model()->where([
-                'expid'=>Admin::user()->id,
+                'expid'=>Admin::user()->id
             ]);
+            $grid->model()->where('timestamp','>',date('Y-m-d 00:00:00',time()));
+//            $grid->model()->where(function($query){
+//                $query->where('timestamp','>',date('Y-m-d 00:00:00',time()));
+//            });
             $grid->model()->orderBy('timestamp','desc');
 
             $grid->column('timestamp','时间')->display(function($timestamp){
@@ -110,11 +114,20 @@ class LivebcController extends Controller
         return Admin::form(Livebc::class, function (Form $form) {
             $form->disableReset();
             $form->setAction('/admin/livebc');
+            $form->radio('tag','点评类型')->options(Livebc::TAG)->default(0);
             $form->editor('content', '点评内容')->rules('required', [
                 'required' => '必须填写',
             ]);;
             $form->time('timestamp', '时间')->default(date('H:i:s',time()));
-            $form->radio('tag','点评类型')->options(Livebc::TAG)->default(0);
+            $js=<<<JSEND
+<script>
+$(function(){
+    $('.form-horizontal .box-footer').css('margin-top','-90px');    
+});
+</script>
+JSEND;
+
+            $form->html($js);
             $form->saving(function(Form $form){
                 $form->timestamp=date('Y-m-d '.$form->timestamp,time());
                 $form->model()->expid=Admin::user()->id;
