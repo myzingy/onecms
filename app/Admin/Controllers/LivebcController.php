@@ -122,7 +122,8 @@ class LivebcController extends Controller
             $js=<<<JSEND
 <script>
 $(function(){
-    $('.form-horizontal .box-footer').css('margin-top','-90px');    
+    $('.form-horizontal .box-footer').css('margin-top','-90px'); 
+    $('.form-horizontal').prev().remove(); 
 });
 </script>
 JSEND;
@@ -131,6 +132,9 @@ JSEND;
             $form->saving(function(Form $form){
                 $form->timestamp=date('Y-m-d '.$form->timestamp,time());
                 $form->model()->expid=Admin::user()->id;
+            });
+            $form->saved(function(Form $form){
+                return redirect('/admin/livebc');
             });
         });
     }

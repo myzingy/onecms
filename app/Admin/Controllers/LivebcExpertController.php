@@ -134,6 +134,7 @@ class LivebcExpertController extends Controller
 
             $form->text('name', '直播名称');
             $form->textarea('notice', '直播公告')->rows(10);
+            //$form->radio('fee_type','是否收费')->options(['0' => '免费直播', '1'=> '收费直播'])->default('0');
             $form->currency('fee_bc', '直播价格')->symbol('￥');
             $form->radio('state','是否直播')->options(LivebcExpert::STATE);
             $form->display('expid', '直播地址')->with(function ($expid) {
@@ -143,6 +144,15 @@ class LivebcExpertController extends Controller
                     .'&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect'
                     .'<a href="#"></a></div>';
             });
+            $js=<<<JSEND
+<script>
+$(function(){
+    
+});
+</script>
+JSEND;
+
+            $form->html($js);
         });
     }
 }
