@@ -111,6 +111,12 @@ class AdsController extends Controller
             $form->image('imgurl','广告图片')->help('建议 640*200');
             $form->url('url','广告链接');
             $form->date('expires','到期时间');
+            $form->saved(function (Form $form) {
+                if($form->model()->imgurl && false === strpos($form->model()->imgurl,'http')){
+                    $form->model()->imgurl = config('filesystems.disks.admin.url') .'/'.$form->model()->imgurl;
+                }
+                $form->model()->save();
+            });
         });
     }
 }
