@@ -12,6 +12,8 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 
 class ExpertController extends Controller
 {
@@ -24,6 +26,13 @@ class ExpertController extends Controller
      */
     public function index()
     {
+        $act=Input::get('act');
+        if($act=='api?'){
+            $expert=Expert::select(DB::raw('expid as id,real_name as text'))
+                ->orderBy('real_name','asc')
+                ->get();
+            return $expert;
+        }
         return Admin::content(function (Content $content) {
 
             $content->header('讲师管理');

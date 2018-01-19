@@ -30,4 +30,5 @@ Route::group([
 
     $router->resource('/livebc_expert', LivebcExpertController::class);
     $router->resource('/livebc', LivebcController::class);
+    $router->resource('/ads', AdsController::class);
 });
