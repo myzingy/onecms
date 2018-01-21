@@ -109,7 +109,7 @@ class AdsController extends Controller
             $form->text('expid','讲师 ID')->help('为0时公用');
             //$form->select('expid','讲师')->options('/admin/lecturer/users?act=api');
             $form->image('imgurl','广告图片')->help('建议 640*200');
-            $form->url('url','广告链接');
+            $form->text('url','广告链接');
             $form->date('expires','到期时间');
             $form->saved(function (Form $form) {
                 if($form->model()->imgurl && false === strpos($form->model()->imgurl,'http')){

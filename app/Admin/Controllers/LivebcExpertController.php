@@ -86,7 +86,8 @@ class LivebcExpertController extends Controller
                         'name'=>$name,
                         'notice'=>'',
                         'fee_bc'=>0,
-                        'state'=>LivebcExpert::STATE_ENABLE
+                        'state'=>LivebcExpert::STATE_ENABLE,
+                        'discount'=>0
                     ]);
                     $LivebcExpert->save();
                 }
@@ -95,7 +96,9 @@ class LivebcExpertController extends Controller
             $grid->model()->with(['expert']);
             $grid->column('expert.real_name','讲师');
             $grid->column('name','直播名称');
-            $grid->column('fee_bc','直播价格');
+            $grid->column('fee_bc','直播价格')->display(function($fee_bc){
+                return $this->discount==0?'免费':"{$fee_bc} ($this->discount 折)";
+            });
             $grid->column('notice','直播公告')->style('max-width:600px;');
             $grid->state('状态')->select(LivebcExpert::STATE)->style('width:120px;');
             //disableCreation
@@ -129,13 +132,24 @@ class LivebcExpertController extends Controller
     protected function form()
     {
         return Admin::form(LivebcExpert::class, function (Form $form) {
-
+            $form->ignore(['fee_type']);
             $form->display('expid', '讲师ID');
 
             $form->text('name', '直播名称');
             $form->textarea('notice', '直播公告')->rows(10);
-            //$form->radio('fee_type','是否收费')->options(['0' => '免费直播', '1'=> '收费直播'])->default('0');
+
+            $form->radio('fee_type','是否收费')
+                ->options(['免费直播','收费直播'])->default(function() use ($form){
+                    $feeType=$form->model()->discount<1?0:1;
+                    if($feeType==0){
+                        echo('<script>$(function(){$(\'input[name="fee_bc"]\').parents(\'.form-group\').hide();$(\'input[name="discount"]\').parents(\'.form-group\').hide();});</script>');
+                    }
+                    return $feeType;
+                });
             $form->currency('fee_bc', '直播价格')->symbol('￥');
+            $form->slider('discount', '折 扣')
+                ->options(['max' => 10, 'min' => 1, 'step' => 1, 'postfix' => ' 折'])
+                ->default(10);
             $form->radio('state','是否直播')->options(LivebcExpert::STATE);
             $form->display('expid', '直播地址')->with(function ($expid) {
                 return '<div style="width: 100%;word-break: break-all;">'
@@ -147,7 +161,29 @@ class LivebcExpertController extends Controller
             $js=<<<JSEND
 <script>
 $(function(){
-    
+    setTimeout(function(){
+        function ihAction(ih){
+            var val=ih.prev().val();
+            if(val==1){
+                //var xv=$('input[name="discount"]').val();
+                //$('input[name="discount"]').val(xv>0?xv:1);
+                $('input[name="fee_bc"]').parents('.form-group').show();
+                $('input[name="discount"]').parents('.form-group').show();        
+            }else{
+                $('input[name="discount"]').val(0);
+                $('input[name="fee_bc"]').parents('.form-group').hide();
+                $('input[name="discount"]').parents('.form-group').hide();    
+            }  
+        };
+        $('input[name="fee_type"]').parents('.radio-inline').click(function(){
+            var ih=$(this).find('.iCheck-helper');
+            ihAction(ih);
+        });
+        $('input[name="fee_type"]').next().click(function(){
+            var ih=$(this);
+            ihAction(ih);
+        });   
+    },100);  
 });
 </script>
 JSEND;
