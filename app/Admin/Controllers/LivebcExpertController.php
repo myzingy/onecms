@@ -85,7 +85,7 @@ class LivebcExpertController extends Controller
                         'expid'=>$expid,
                         'name'=>$name,
                         'notice'=>'',
-                        'fee_bc'=>0,
+                        'fee_bc'=>100,
                         'state'=>LivebcExpert::STATE_ENABLE,
                         'discount'=>0
                     ]);
@@ -132,6 +132,7 @@ class LivebcExpertController extends Controller
     protected function form()
     {
         return Admin::form(LivebcExpert::class, function (Form $form) {
+
             $form->ignore(['fee_type']);
             $form->display('expid', '讲师ID');
 
@@ -146,9 +147,14 @@ class LivebcExpertController extends Controller
                     }
                     return $feeType;
                 });
-            $form->currency('fee_bc', '直播价格')->symbol('￥');
+            //$form->currency('fee_bc', '直播价格')->symbol('￥')->rules('integer|digits_between:100,1000',[
+            $form->text('fee_bc', '直播价格')->rules('integer|min:100|max:1000',[
+                'integer'=>'请输入整数',
+                'min'=>'价格必须在100-1000之间',
+                'max'=>'价格必须在100-1000之间'
+            ]);
             $form->slider('discount', '折 扣')
-                ->options(['max' => 10, 'min' => 1, 'step' => 1, 'postfix' => ' 折'])
+                ->options(['max' => 100, 'min' => 10, 'step' => 5, 'postfix' => ' 折'])
                 ->default(10);
             $form->radio('state','是否直播')->options(LivebcExpert::STATE);
             $form->display('expid', '直播地址')->with(function ($expid) {
@@ -189,6 +195,10 @@ $(function(){
 JSEND;
 
             $form->html($js);
+            $form->saved(function(Form $form){
+                $form->model()->discount=$form->discount<=10?$form->discount*10:$form->discount;
+                $form->model()->save();
+            });
         });
     }
 }
