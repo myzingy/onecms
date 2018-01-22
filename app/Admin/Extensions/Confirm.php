@@ -25,8 +25,9 @@ class Confirm
         $cancel = trans('admin.cancel');
 
         $script = <<<SCRIPT
+        var flag=true;
 $('.grid-row-confirm').unbind('click').click(function() {
-
+    
     var id = $(this).data('id');
 
     swal({
@@ -39,6 +40,11 @@ $('.grid-row-confirm').unbind('click').click(function() {
           cancelButtonText: "$cancel"
         },
         function(){
+            if(!flag) {
+                toastr.warning('操作太快，请稍等一会');
+                return;
+            }
+            flag=false;
             $.ajax({
                 method: 'post',
                 url: '{$this->url}'.replace('{id}',id),
@@ -47,10 +53,12 @@ $('.grid-row-confirm').unbind('click').click(function() {
                     _token:LA.token,
                 },
                 success: function (data) {
+                    flag=true;
                     $.pjax.reload('#pjax-container');
                     swal('操作成功', '', 'success');
                 },
                 error: function(x, e) {
+                    flag=true;
                     if (x.status == 500) {
                         swal(x.responseJSON.message, '', 'error');
                     }

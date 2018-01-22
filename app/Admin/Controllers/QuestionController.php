@@ -54,7 +54,9 @@ class QuestionController extends Controller
             $qm->state=Question::STATE_YJJ;
             $qm->answer='抱歉，我无法回答您的问题';
             $qm->save();
+            \Log::info('refund::Question',[$id,$qm->paylog->state,$qm->paylog->state==Paylog::STATE_YZF]);
             if($qm->paylog && $qm->paylog->state==Paylog::STATE_YZF){
+                \Log::info('refund::start=>'.'/admin/paylog/'.$qm->paylog->payid.'/edit?act=refund');
                 return redirect('/admin/paylog/'.$qm->paylog->payid.'/edit?act=refund');
             }
             return $qm;
@@ -239,14 +241,14 @@ class QuestionController extends Controller
                     $form->model()->state=Question::STATE_YHD;
                     $form->model()->save();
                     $client=new Client();
-                    \Log::info('answer-saved',[$this->changed,$form->answer,$form->model()->answer]);
+                    //\Log::info('answer-saved',[$this->changed,$form->answer,$form->model()->answer]);
                     if($this->changed){
                         $response = $client->request('POST', 'http://dv.cnfol.com/ques/ntfuser', [
                             'form_params' => [
                                 'qid' => $form->model()->qid,
                             ]
                         ]);
-                        \Log::info('ntfuser',[$form->model()->qid,$response->getBody()]);
+                        //\Log::info('ntfuser',[$form->model()->qid,$response->getBody()]);
                     }
 
                 }

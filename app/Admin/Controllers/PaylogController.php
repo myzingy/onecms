@@ -103,6 +103,7 @@ class PaylogController extends Controller
             $grid->model()->with(['question','expert','mpuser']);
             $grid->model()->orderBy('payid', 'desc');
             $grid->payid('ID')->sortable();
+            $grid->trade_no('订单号');
             $grid->openid('OPENID');
             $grid->column('mpuser.nickname','提问者昵称');
             $grid->column('question.asker_name','提问者姓名');
