@@ -142,7 +142,7 @@ class DailyController extends Controller
                 if(Auth::isAdministrator()) {
                     echo view('admin.grid.total', ['total' => '[3,5,6,7]']);
                 }else{
-                    echo view('admin.grid.total', ['total' => '[3,5,6]']);
+                    echo view('admin.grid.total', ['total' => '[4,5]']);
                 }
             });
         });
