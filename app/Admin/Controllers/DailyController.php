@@ -86,9 +86,11 @@ class DailyController extends Controller
             $grid->expid('讲师ID')->sortable();
             $grid->column('expert.mp_name','公众号');
             $grid->column('expert.real_name','讲师姓名');
-            $grid->fee_total('本日收入')->display(function ($fee) {
-                return $fee/100;
-            });
+            if(!Admin::user()->isRole('lecturer')) {
+                $grid->fee_total('本日收入')->display(function ($fee) {
+                    return $fee / 100;
+                });
+            }
             $grid->date('日期');
             $grid->fee_refund('退款申请金额')->display(function ($fee) {
                 return $fee/100;
