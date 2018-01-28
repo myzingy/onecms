@@ -139,8 +139,12 @@ class DailyController extends Controller
 
             });
             $grid->footer(function(){
-                if(Auth::isAdministrator()) {
-                    echo view('admin.grid.total', ['total' => '[3,5,6,7]']);
+                if(!Admin::user()->isRole('lecturer')) {
+                    if(Auth::isAdministrator()) {
+                        echo view('admin.grid.total', ['total' => '[3,5,6,7]']);
+                    }else{
+                        echo view('admin.grid.total', ['total' => '[3,5,6]']);
+                    }
                 }else{
                     echo view('admin.grid.total', ['total' => '[4,5]']);
                 }
