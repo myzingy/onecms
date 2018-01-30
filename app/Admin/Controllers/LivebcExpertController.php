@@ -197,6 +197,24 @@ JSEND;
             $form->html($js);
             $form->saved(function(Form $form){
                 $form->model()->discount=$form->discount<=10?$form->discount*10:$form->discount;
+                //
+                $state=$form->model()->state;
+                $leaveat=$form->model()->leaveat;
+                $day=0;
+                if($leaveat){
+                    $stime=strtotime($leaveat. ' 00:00:00');
+                    $etime=strtotime(date('Y-m-d 00:00:00',time()));
+                    if($etime-$stime>0){
+                        $day=($etime-$stime)/86400;
+                    }
+                }
+                if($state==LivebcExpert::STATE_ENABLE){//启用
+                    $form->model()->leaveat=null;
+                    $form->model()->leavedays=$day;
+                }else{
+                    $form->model()->leaveat=date('Y-m-d H:i:s',time());
+                    $form->model()->leavedays=0;
+                }
                 $form->model()->save();
             });
         });
