@@ -176,7 +176,7 @@ class StatisticsController extends Controller
 
             });
             $grid->footer(function() use($grid){
-                echo view('admin.grid.total',['total'=>'[1,2,3,4,5,6,7]']);
+                echo view('admin.grid.total',['total'=>'[1,2,3,5,6,7]']);
             });
         });
     }
