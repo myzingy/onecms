@@ -111,7 +111,8 @@ class StatisticsController extends Controller
                     .',sum(fee_refund) as fee_refund'
                     .',sum(fee_due) as fee_due'
                     .',sum(fee_owe) as fee_owe'
-                    .',(sum(fee_total)-sum(fee_due)-sum(fee_owe)-sum(fee_refund)) as fee_money'
+                    //.',(sum(fee_total)-sum(fee_due)-sum(fee_owe)-sum(fee_refund)) as fee_money'
+                    .',(sum(fee_total)-sum(fee_due)) as fee_money'
                     .',substring(`date`,-10,7) as `month`'
                     .",DATE_FORMAT(`date`,'%Y年第%u周') weeks"
                 )
@@ -203,7 +204,8 @@ class StatisticsController extends Controller
                     .',sum(fee_refund) as fee_refund'
                     .',sum(fee_due) as fee_due'
                     .',sum(fee_owe) as fee_owe'
-                    .',(sum(fee_total)-sum(fee_due)-sum(fee_owe)-sum(fee_refund)) as fee_money'
+                    //.',(sum(fee_total)-sum(fee_due)-sum(fee_owe)-sum(fee_refund)) as fee_money'
+                    .',(sum(fee_total)-sum(fee_due)) as fee_money'
                     )
             )->first();
 
