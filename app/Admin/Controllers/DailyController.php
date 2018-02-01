@@ -93,7 +93,7 @@ class DailyController extends Controller
                 });
             }
             $grid->date('日期');
-            $grid->fee_refund('退款申请金额')->display(function ($fee) {
+            $grid->fee_refund('未答超时退款')->display(function ($fee) {
                 return $fee/100;
             });
             $grid->fee_due('结算收入')->display(function ($fee) {
@@ -142,12 +142,12 @@ class DailyController extends Controller
             $grid->footer(function(){
                 if(!Admin::user()->isRole('lecturer')) {
                     if(Auth::isAdministrator()) {
-                        echo view('admin.grid.total', ['total' => '[3,5,6,7]']);
+                        echo view('admin.grid.total', ['total' => '[3,6,7]']);
                     }else{
-                        echo view('admin.grid.total', ['total' => '[3,5,6]']);
+                        echo view('admin.grid.total', ['total' => '[3,6]']);
                     }
                 }else{
-                    echo view('admin.grid.total', ['total' => '[4,5]']);
+                    echo view('admin.grid.total', ['total' => '[5]']);
                 }
             });
         });
