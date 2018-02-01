@@ -79,7 +79,7 @@ class LivebcSubsController extends Controller
             $grid->model()->orderBy('timestamp', 'desc');
             $grid->trade_no('订单号');
             $grid->openid('OPENID');
-            $grid->column('mpuser.nickname','提问者昵称');
+            $grid->column('mpuser.nickname','订阅者昵称');
             $grid->column('expert.real_name','讲师姓名');
             $grid->fee('金额')->display(function ($fee) {
                 return $fee/1;
