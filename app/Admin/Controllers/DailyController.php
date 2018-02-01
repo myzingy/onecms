@@ -76,6 +76,7 @@ class DailyController extends Controller
     {
         return Admin::grid(Daily::class, function (Grid $grid) {
             $grid->model()->orderBy('date', 'desc');
+            $grid->model()->orderBy('expid', 'asc');
             $grid->paginate(31);
             $grid->perPages([10, 20, 31, 40, 50]);
             $grid->model()->with(['expert']);
