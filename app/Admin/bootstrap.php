@@ -23,6 +23,7 @@ use Encore\Admin\Grid\Column;
 use App\Admin\Extensions\Popover;
 use App\Admin\Extensions\Stick;
 use App\Admin\Extensions\Refund;
+use App\Admin\Extensions\RefundValue;
 Encore\Admin\Form::forget(['map']);
 app('view')->prependNamespace('admin', resource_path('views/admin'));
 Admin::js('/vendor/echarts/echarts.common.min.js');
@@ -41,3 +42,4 @@ Column::extend('popover', Popover::class);
 
 Column::extend('stick', Stick::class);
 Column::extend('refund', Refund::class);
+Column::extend('refundValue', RefundValue::class);
