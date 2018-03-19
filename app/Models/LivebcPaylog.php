@@ -9,12 +9,14 @@ class LivebcPaylog extends Model
     const STATE_WZF=0;      //未支付
     const STATE_YZF=1;      //已支付
     const STATE_YTK=2;      //已退款
-    //const STATE_YSB=3;      //支付失败
-    //const STATE_TSB=4;      //退款失败
+    const STATE_TSB=3;      //退款失败
+    //const STATE_YSB=4;      //支付失败
+
     const STATE=[
         self::STATE_WZF=>'未支付',
         self::STATE_YZF=>'支付成功',
         self::STATE_YTK=>'已退款',
+        self::STATE_TSB=>'退款失败',
     ];
     protected $table = 'livebc_paylog';
 

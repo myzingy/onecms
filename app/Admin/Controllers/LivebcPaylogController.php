@@ -11,6 +11,7 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use Illuminate\Support\Facades\Input;
 
 class LivebcPaylogController extends Controller
 {
@@ -40,6 +41,33 @@ class LivebcPaylogController extends Controller
      */
     public function edit($id)
     {
+        $act=Input::get('act','');
+        //refuse
+        if($act=='refund'){//退款
+            $fee=Input::get('fee','');
+            $m=$this->form()->edit($id)->model();
+            if($m->state!=LivebcPaylog::STATE_YZF) throw new \Exception('未支付或已退款');
+            if($fee<1 || $fee>$m->fee){
+                throw new \Exception('退款金额异常，请重新填写');
+            }
+            $trade_no=$m->trade_no.'_test';
+            $url='http://dv.cnfol.com/lvbc/refund?tradeno='
+                .$trade_no.'&fee='
+                .$fee.'&code='
+                .md5($trade_no.$fee.'OJjjfdfjsdfsdfji@!&*@^*&^^jjjfdsfjds');
+            \Log::info('lvbc-refund-url:'.$url);
+            $res=$this->curl_get_contents($url,30);
+            \Log::info('lvbc-refund-res:'.$res);
+            if($res=='OK'){
+                $m->state=LivebcPaylog::STATE_YTK;
+                $m->save();
+            }else{
+                //$m->state=LivebcPaylog::STATE_TSB;
+                //$m->save();
+                throw new \Exception('退款失败');
+            }
+            return $m;
+        }
         return Admin::content(function (Content $content) use ($id) {
 
             $content->header('header');
@@ -127,5 +155,14 @@ class LivebcPaylogController extends Controller
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
         });
+    }
+    function curl_get_contents($url,$timeout=1) {
+        $curlHandle = curl_init();
+        curl_setopt( $curlHandle , CURLOPT_URL, $url );
+        curl_setopt( $curlHandle , CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt( $curlHandle , CURLOPT_TIMEOUT, $timeout );
+        $result = curl_exec( $curlHandle );
+        curl_close( $curlHandle );
+        return $result;
     }
 }

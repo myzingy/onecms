@@ -42,16 +42,24 @@ $('.paylog-refund').unbind('click').click(function() {
             inputValue:$(this).data('defRefundFee'),
         },
         function(inputValue){
-            if(!ajax) return;
-            ajax=false;
             if (inputValue === false) return false;
             if (inputValue === "") {
                 swal.showInputError("请输入退款金额!");
                 return false
             }
+            if (!/^[1-9][.\d]+$/.test(inputValue)) {
+                swal.showInputError("退款金额错误!");
+                return true
+            }
+            if (inputValue <1 || inputValue>maxRefundFee) {
+                swal.showInputError("退款金额在 1-"+maxRefundFee+" 之间!");
+                return true
+            }
+            if(!ajax) return;
+            ajax=false;
             $.ajax({
                 method: 'post',
-                url: '{$this->getResource()}/' + id+'/edit?act=refund',
+                url: '{$this->getResource()}/' + id+'/edit?act=refund&fee='+inputValue,
                 data: {
                     _method:'get',
                     _token:LA.token,
