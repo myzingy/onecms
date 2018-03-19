@@ -15,3 +15,5 @@ Route::get('/', function () {
     return redirect()->guest('admin');
     //return view('welcome');
 });
+//Route::get('/vking', 'VkingController@index')->name('vking');
+Route::resource('/vking', VkingController::class);
