@@ -95,7 +95,12 @@ class LivebcExpertController extends Controller
             }
             $grid->model()->with(['expert']);
             $grid->column('expert.real_name','讲师');
-            $grid->column('name','直播名称');
+            $grid->column('name','直播名称')->display(function($name){
+                if(Admin::user()->isRole('administrator')) {
+                    return "<a href=\"/admin/livebcAdmin?expid={$this->expid}\">{$name} (进入直播)</a>";
+                }
+                return $name;
+            });
             $grid->column('fee_bc','直播价格')->display(function($fee_bc){
                 return $this->discount==0?'免费':"{$fee_bc} ($this->discount 折)";
             });
