@@ -87,7 +87,7 @@ class LivebcSubsController extends Controller
 //            });
             $grid->timestamp('订阅时间');
             //$grid->expires('到期时间');
-            $grid->column('extend.expires_new','到期时间')->display(function ($expires_new) {
+            $grid->column('expires','到期时间')->display(function ($expires_new) {
                 return $expires_new?$expires_new:$this->expires;
             })->editable('date');
             $grid->column('state','订阅类型')->display(function ($state) {
@@ -124,12 +124,11 @@ class LivebcSubsController extends Controller
     protected function form()
     {
         return Admin::form(LivebcSubs::class, function (Form $form) {
-            $form->model()->with(['extend']);
             $form->display('id', 'ID');
             //$form->display('created_at', 'Created At');
             //$form->display('updated_at', 'Updated At');
             //$form->datetime('timestamp', '排序权值');
-            $form->date('extend.expires_new', '过期日期');
+            $form->date('expires', '过期日期');
         });
     }
 }
