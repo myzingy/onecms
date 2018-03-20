@@ -6,20 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class LivebcSubs extends Model
 {
-    const STATE_WZF=0;      //未支付
-    const STATE_YZF=1;      //支付成功
-    const STATE_YSB=2;      //支付失败
-    const STATE_YTK=3;      //已退款
-    const STATE_TSB=4;      //退款失败
+    const STATE_FF=1;      //付费
+    const STATE_TY=2;      //体验
     const STATE=[
-        self::STATE_WZF=>'未支付',
-        self::STATE_YZF=>'支付成功',
-        self::STATE_YSB=>'支付失败',
-        self::STATE_YTK=>'已退款',
-        self::STATE_TSB=>'退款失败',
+        self::STATE_FF=>'付费',
+        self::STATE_TY=>'体验',
     ];
     protected $table = 'livebc_subs';
-
+    protected $primaryKey = 'id';
     public $timestamps = false;
     public function expert()
     {
@@ -28,6 +22,10 @@ class LivebcSubs extends Model
     public function mpuser()
     {
         return $this->hasOne(Mpuser::class,'opid_mp','openid');
+    }
+    public function extend()
+    {
+        return $this->hasOne(LivebcSubsExtend::class,'sub_id','id');
     }
     public static function getStateStr($state=self::STATE_WZF){
         if(empty(self::STATE[$state])){

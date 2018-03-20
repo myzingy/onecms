@@ -11,6 +11,7 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use Illuminate\Support\Facades\Input;
 
 class LivebcSubsController extends Controller
 {
@@ -77,20 +78,23 @@ class LivebcSubsController extends Controller
             $grid->id('ID')->sortable();
 
             $grid->model()->orderBy('timestamp', 'desc');
-            $grid->trade_no('订单号');
+            //$grid->trade_no('订单号');
             $grid->openid('OPENID');
             $grid->column('mpuser.nickname','订阅者昵称');
             $grid->column('expert.real_name','讲师姓名');
-            $grid->fee('金额')->display(function ($fee) {
-                return $fee/1;
-            });
+//            $grid->fee('金额')->display(function ($fee) {
+//                return $fee/1;
+//            });
             $grid->timestamp('订阅时间');
-            $grid->expires('到期时间');
-            $grid->column('state','支付状态')->display(function ($state) {
+            //$grid->expires('到期时间');
+            $grid->column('extend.expires_new','到期时间')->display(function ($expires_new) {
+                return $expires_new?$expires_new:$this->expires;
+            })->editable('date');
+            $grid->column('state','订阅类型')->display(function ($state) {
                 return LivebcSubs::getStateStr($state);
             });
             if(Auth::isAdministrator()){
-                $grid->column('state_x','退款')->refund();
+                //$grid->column('state_x','退款')->refund();
             }
             $grid->disableRowSelector();
             //disableExport
@@ -103,10 +107,10 @@ class LivebcSubsController extends Controller
                 $filter->useModal();
                 // 禁用id查询框
                 $filter->disableIdFilter();
-                $filter->equal('expires', '到期时间')->date();
+                //$filter->equal('expires', '到期时间')->date();
                 $filter->between('timestamp', '订阅时间')->datetime();
                 $filter->like('mpuser.nickname', '订阅者昵称');
-                $filter->in('state', '支付状态')->checkbox(LivebcSubs::STATE);
+                $filter->in('state', '订阅类型')->checkbox(LivebcSubs::STATE);
 
             });
         });
@@ -120,11 +124,12 @@ class LivebcSubsController extends Controller
     protected function form()
     {
         return Admin::form(LivebcSubs::class, function (Form $form) {
-
+            $form->model()->with(['extend']);
             $form->display('id', 'ID');
-
-            $form->display('created_at', 'Created At');
-            $form->display('updated_at', 'Updated At');
+            //$form->display('created_at', 'Created At');
+            //$form->display('updated_at', 'Updated At');
+            //$form->datetime('timestamp', '排序权值');
+            $form->date('extend.expires_new', '过期日期');
         });
     }
 }
