@@ -81,7 +81,9 @@ class LivebcAdminController extends Controller
         return Admin::grid(Livebc::class, function (Grid $grid) {
 
             $expid=Input::get('expid',0);
-            $grid->model()->where(['expid'=>$expid]);
+            $grid->model()->where([
+                'expid'=>$expid
+            ])->where('timestamp','>',date("Y-m-d 00:00:00",time()));
             //disable
             $grid->disableCreation();
             $grid->disableExport();
