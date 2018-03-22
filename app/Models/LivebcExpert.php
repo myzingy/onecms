@@ -9,8 +9,8 @@ class LivebcExpert extends Model
     const STATE_DISABLED=0; //禁用
     const STATE_ENABLE=1;   //启用
     const STATE=[
-        self::STATE_DISABLED=>'未直播',
-        self::STATE_ENABLE=>'直播中',
+        self::STATE_DISABLED=>'禁用',
+        self::STATE_ENABLE=>'启用',
     ];
     protected $table = 'livebc_expert';
 

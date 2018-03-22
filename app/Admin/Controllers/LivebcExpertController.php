@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\Auth;
 use App\Models\LivebcExpert;
 
 use Encore\Admin\Form;
@@ -92,6 +93,8 @@ class LivebcExpertController extends Controller
                     $LivebcExpert->save();
                 }
                 $grid->model()->where('expid', '=', Admin::user()->id);
+                $grid->disableFilter();
+                $grid->disablePagination();
             }
             $grid->model()->with(['expert']);
             $grid->column('expert.real_name','讲师');
@@ -105,7 +108,9 @@ class LivebcExpertController extends Controller
                 return $this->discount==0?'免费':"{$fee_bc} ($this->discount 折)";
             });
             $grid->column('notice','直播公告')->style('max-width:600px;');
-            $grid->state('状态')->select(LivebcExpert::STATE)->style('width:120px;');
+            if(!Auth::isLecturer()){
+                $grid->enable('状态')->select(LivebcExpert::STATE)->style('width:120px;');
+            }
             //disableCreation
             $grid->disableCreation();
             //disableExport
@@ -143,15 +148,17 @@ class LivebcExpertController extends Controller
 
             $form->text('name', '直播名称');
             $form->textarea('notice', '直播公告')->rows(10);
-
             $form->radio('fee_type','是否收费')
                 ->options(['免费直播','收费直播'])->default(function() use ($form){
                     $feeType=$form->model()->discount<1?0:1;
                     if($feeType==0){
                         echo('<script>$(function(){$(\'input[name="fee_bc"]\').parents(\'.form-group\').hide();$(\'input[name="discount"]\').parents(\'.form-group\').hide();});</script>');
+                    }else{
+                        echo('<script>$(function(){$(\'input[name="fee_type"]\').parents(\'.form-group\').hide();});</script>');
                     }
                     return $feeType;
                 });
+
             //$form->currency('fee_bc', '直播价格')->symbol('￥')->rules('integer|digits_between:100,1000',[
             $form->text('fee_bc', '直播价格')->rules('integer|min:100|max:1000',[
                 'integer'=>'请输入整数',
@@ -161,7 +168,7 @@ class LivebcExpertController extends Controller
             $form->slider('discount', '折 扣')
                 ->options(['max' => 100, 'min' => 10, 'step' => 5, 'postfix' => ' 折'])
                 ->default(10);
-            $form->radio('state','是否直播')->options(LivebcExpert::STATE);
+            //$form->radio('state','是否直播')->options(LivebcExpert::STATE);
             $form->display('expid', '直播地址')->with(function ($expid) {
                 return '<div style="width: 100%;word-break: break-all;">'
                     .'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/expert/livebc/'
@@ -202,24 +209,7 @@ JSEND;
             $form->html($js);
             $form->saved(function(Form $form){
                 $form->model()->discount=$form->discount<=10?$form->discount*10:$form->discount;
-                //
-                $state=$form->model()->state;
-                $leaveat=$form->model()->leaveat;
-                $day=0;
-                if($leaveat){
-                    $stime=strtotime($leaveat. ' 00:00:00');
-                    $etime=strtotime(date('Y-m-d 00:00:00',time()));
-                    if($etime-$stime>0){
-                        $day=($etime-$stime)/86400;
-                    }
-                }
-                if($state==LivebcExpert::STATE_ENABLE){//启用
-                    $form->model()->leaveat=null;
-                    $form->model()->leavedays=$day;
-                }else{
-                    $form->model()->leaveat=date('Y-m-d H:i:s',time());
-                    $form->model()->leavedays=0;
-                }
+                $form->model()->type=$form->model()->discount>0?1:0;
                 $form->model()->save();
             });
         });
