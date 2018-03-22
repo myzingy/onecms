@@ -6,13 +6,9 @@ use Encore\Admin\Admin;
 
 class Takenow
 {
-    protected $id,$name,$title,$url;
-    public function __construct($id,$name='',$title='',$url='')
+    public function __construct($defRefundFee)
     {
-        $this->id = $id;
-        $this->name=$name;
-        $this->title=$title;
-        $this->url=$url;
+        $this->defRefundFee=$defRefundFee;
     }
 
     /**
@@ -20,34 +16,46 @@ class Takenow
      */
     public function script()
     {
-        $deleteConfirm = $this->title;
-        $confirm = trans('admin.confirm');
-        $cancel = trans('admin.cancel');
 
         $script = <<<SCRIPT
         var flag=true;
 $('.tixian').unbind('click').click(function() {
     
-    var id = $(this).data('id');
+    var defRefundFee = {$this->defRefundFee};
+    var maxRefundFee = 19999;
+    var ajax=true;
 
     swal({
-          title: "$deleteConfirm",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#DD6B55",
-          confirmButtonText: "$confirm",
-          closeOnConfirm: false,
-          cancelButtonText: "$cancel"
+          type: "input",
+            title: '输入提现金额',  
+            input: 'text',  
+            inputPlaceholder: '输入提现金额',  
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "提 现",
+            closeOnConfirm: false,
+            cancelButtonText: "取 消",
+            showCancelButton: true,
+            inputValue:defRefundFee,
         },
-        function(){
-            if(!flag) {
-                toastr.warning('操作太快，请稍等一会');
-                return;
+        function(inputValue){
+            if (inputValue === false) return false;
+            if (inputValue === "") {
+                swal.showInputError("请输入提现金额!");
+                return false
             }
-            flag=false;
+            if (!/^[1-9][0-9]*$/.test(inputValue)) {
+                swal.showInputError("提现金额错误!");
+                return true
+            }
+            if (inputValue <1 || inputValue>maxRefundFee) {
+                swal.showInputError("提现金额在 1-"+maxRefundFee+" 之间!");
+                return true
+            }
+            if(!ajax) return;
+            ajax=false;
             $.ajax({
                 method: 'post',
-                url: '{$this->url}'.replace('{id}',id),
+                url: '{$this->getResource()}/1/edit?act=trans&fee='+inputValue,
                 data: {
                     _method:'get',
                     _token:LA.token,
@@ -74,11 +82,25 @@ SCRIPT;
     {
         Admin::script($this->script());
 
-        return "<button class=\"btn btn-primary tixian\" type=\"submit\">提现</button>";
+        return "<button class=\"btn btn-primary tixian\" type=\"submit\">我要提现</button>";
     }
 
     public function __toString()
     {
         return $this->render();
+    }
+    public function getResource($path = null)
+    {
+        if (!empty($path)) {
+            $this->resourcePath = $path;
+
+            return $this;
+        }
+
+        if (!empty($this->resourcePath)) {
+            return $this->resourcePath;
+        }
+
+        return app('request')->getPathInfo();
     }
 }

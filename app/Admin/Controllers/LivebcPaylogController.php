@@ -50,7 +50,7 @@ class LivebcPaylogController extends Controller
             if($fee<1 || $fee>$m->fee){
                 throw new \Exception('退款金额异常，请重新填写');
             }
-            $trade_no=$m->trade_no.'_test';
+            $trade_no=$m->trade_no;//.'_test';
             $url='http://dv.cnfol.com/lvbc/refund?tradeno='
                 .$trade_no.'&fee='
                 .$fee.'&code='

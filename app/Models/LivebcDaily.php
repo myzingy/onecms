@@ -15,6 +15,7 @@ class LivebcDaily extends Model
     protected $table = 'livebc_daily';
 
     public $timestamps = false;
+    protected $fillable = ['expid','fee','type','timestamp'];
     public function expert()
     {
         return $this->hasOne(Expert::class,'expid','expid');

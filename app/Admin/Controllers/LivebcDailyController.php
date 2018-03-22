@@ -6,6 +6,7 @@ use App\Admin\Extensions\Confirm;
 use App\Admin\Extensions\RefundValue;
 use App\Admin\Extensions\Takenow;
 use App\Models\Auth;
+use App\Models\Expert;
 use App\Models\LivebcDaily;
 
 use Encore\Admin\Form;
@@ -17,6 +18,7 @@ use Encore\Admin\Controllers\ModelForm;
 use Encore\Admin\Layout\Row;
 use Encore\Admin\Widgets\Box;
 use Encore\Admin\Widgets\InfoBox;
+use Illuminate\Support\Facades\Input;
 
 class LivebcDailyController extends Controller
 {
@@ -55,9 +57,10 @@ class LivebcDailyController extends Controller
             $box = new Box('未提现', number_format($fee[LivebcDaily::TYPE_RZ]-$fee[LivebcDaily::TYPE_TX],2));
             $box->style('success');
             //$box->solid();
-            $box->content(number_format($fee[LivebcDaily::TYPE_RZ]-$fee[LivebcDaily::TYPE_TX],2)
+            $max_fee=$fee[LivebcDaily::TYPE_RZ]-$fee[LivebcDaily::TYPE_TX];
+            $box->content(number_format($max_fee,2)
                 .' '
-                .new Takenow(1)
+                .new Takenow($max_fee>19999?19999:$max_fee)
             );
             $row->column(4, $box);
         });
@@ -73,6 +76,10 @@ class LivebcDailyController extends Controller
      */
     public function edit($id)
     {
+        $act=Input::get('act','');
+        if($act=='trans') {//退款
+            return $this->trans();
+        }
         return Admin::content(function (Content $content) use ($id) {
 
             $content->header('header');
@@ -156,5 +163,37 @@ class LivebcDailyController extends Controller
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
         });
+    }
+    function trans(){
+        $fee=Input::get('fee','');
+        $expid=Admin::user()->id;
+        $url='http://dv.cnfol.com/livebc/trans?expid='
+            .$expid.'&fee='
+            .$fee.'&code='
+            .md5($expid.$fee.'OJjjfdfjsdfsdfji@!&*@^*&^^jjjfdsfjds');
+        \Log::info('lvbc-refund-url:'.$url);
+        $res=$this->curl_get_contents($url,30);
+        \Log::info('lvbc-refund-res:'.$res);
+        if($res=='OK'){
+            $m=LivebcDaily::create([
+                'fee'=>$fee,
+                'expid'=>$expid,
+                'type'=>LivebcDaily::TYPE_TX,
+                'timestamp'=>date("Y-m-d H:i:s",time()),
+            ]);
+            $m->save();
+        }else{
+            throw new \Exception('提现失败');
+        }
+        return $m;
+    }
+    function curl_get_contents($url,$timeout=1) {
+        $curlHandle = curl_init();
+        curl_setopt( $curlHandle , CURLOPT_URL, $url );
+        curl_setopt( $curlHandle , CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt( $curlHandle , CURLOPT_TIMEOUT, $timeout );
+        $result = curl_exec( $curlHandle );
+        curl_close( $curlHandle );
+        return $result;
     }
 }
