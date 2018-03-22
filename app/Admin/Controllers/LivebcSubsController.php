@@ -75,10 +75,11 @@ class LivebcSubsController extends Controller
     {
         return Admin::grid(LivebcSubs::class, function (Grid $grid) {
 
+            $isLecturer=Auth::isLecturer();
             $grid->id('ID')->sortable();
 
             $grid->model()->orderBy('timestamp', 'desc');
-            if(Auth::isLecturer()){
+            if($isLecturer){
                 $grid->model()->where(['expid'=>Admin::user()->id]);
             }
             //$grid->trade_no('订单号');
@@ -90,9 +91,11 @@ class LivebcSubsController extends Controller
 //            });
             $grid->timestamp('订阅时间');
             //$grid->expires('到期时间');
-            $grid->column('expires','到期时间')->display(function ($expires_new) {
-                return $expires_new?$expires_new:$this->expires;
-            })->editable('date');
+            if($isLecturer) {
+                $grid->column('expires', '到期时间');
+            }else{
+                $grid->column('expires', '到期时间')->editable('date');
+            }
             $grid->column('state','订阅类型')->display(function ($state) {
                 return LivebcSubs::getStateStr($state);
             });
