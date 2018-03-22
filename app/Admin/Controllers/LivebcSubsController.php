@@ -78,6 +78,9 @@ class LivebcSubsController extends Controller
             $grid->id('ID')->sortable();
 
             $grid->model()->orderBy('timestamp', 'desc');
+            if(Auth::isLecturer()){
+                $grid->model()->where(['expid'=>Admin::user()->id]);
+            }
             //$grid->trade_no('订单号');
             $grid->openid('OPENID');
             $grid->column('mpuser.nickname','订阅者昵称');

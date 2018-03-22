@@ -42,8 +42,17 @@ class LivebcDailyController extends Controller
     private function setTodayStat($content){
 
         $content->row(function (Row $row) {
-            $fee[LivebcDaily::TYPE_RZ]=LivebcDaily::where(['type'=>LivebcDaily::TYPE_RZ])->sum('fee');
-            $fee[LivebcDaily::TYPE_TX]=LivebcDaily::where(['type'=>LivebcDaily::TYPE_TX])->sum('fee');
+            $isLecturer=Auth::isLecturer();
+            $where=['type'=>LivebcDaily::TYPE_RZ];
+            if($isLecturer){
+                $where['expid']=Admin::user()->id;
+            }
+            $fee[LivebcDaily::TYPE_RZ]=LivebcDaily::where($where)->sum('fee');
+            $where=['type'=>LivebcDaily::TYPE_TX];
+            if($isLecturer){
+                $where['expid']=Admin::user()->id;
+            }
+            $fee[LivebcDaily::TYPE_TX]=LivebcDaily::where($where)->sum('fee');
             $box = new Box('直播收入', number_format($fee[LivebcDaily::TYPE_RZ],2));
             $box->style('danger');
             //$box->solid();
@@ -60,7 +69,7 @@ class LivebcDailyController extends Controller
             $max_fee=$fee[LivebcDaily::TYPE_RZ]-$fee[LivebcDaily::TYPE_TX];
             $box->content(number_format($max_fee,2)
                 .' '
-                .new Takenow($max_fee>19999?19999:$max_fee)
+                .(($isLecturer && $max_fee>0)?new Takenow($max_fee>19999?19999:$max_fee):'')
             );
             $row->column(4, $box);
         });
@@ -117,7 +126,12 @@ class LivebcDailyController extends Controller
             //$grid->id('ID')->sortable();
 
             $grid->model()->orderBy('timestamp', 'desc');
-            $grid->column('expert.real_name','讲师姓名');
+            if(Auth::isLecturer()){
+                $grid->model()->where(['expid'=>Admin::user()->id]);
+            }
+            $grid->column('expert.real_name','讲师姓名')->display(function($real_name){
+                return $real_name?$real_name:"ID:{$this->expid}";
+            });
             $grid->timestamp('操作时间');
             $grid->fee('金额')->display(function ($fee) {
                 return $fee/1;
