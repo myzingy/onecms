@@ -160,10 +160,10 @@ class LivebcExpertController extends Controller
                 });
 
             //$form->currency('fee_bc', '直播价格')->symbol('￥')->rules('integer|digits_between:100,1000',[
-            $form->text('fee_bc', '直播价格')->rules('integer|min:100|max:1000',[
+            $form->text('fee_bc', '直播价格')->rules('integer|min:100|max:2000',[
                 'integer'=>'请输入整数',
-                'min'=>'价格必须在100-1000之间',
-                'max'=>'价格必须在100-1000之间'
+                'min'=>'价格必须在100-2000之间',
+                'max'=>'价格必须在100-2000之间'
             ]);
             $form->slider('discount', '折 扣')
                 ->options(['max' => 100, 'min' => 10, 'step' => 5, 'postfix' => ' 折'])
@@ -208,8 +208,9 @@ JSEND;
 
             $form->html($js);
             $form->saved(function(Form $form){
-                $form->model()->discount=$form->discount<=10?$form->discount*10:$form->discount;
-                $form->model()->type=$form->model()->discount>0?1:0;
+                $discount=$form->discount<=10?$form->discount*10:$form->discount;
+                $form->model()->discount=$discount;
+                $form->model()->type=$discount>0?1:0;
                 $form->model()->save();
             });
         });
