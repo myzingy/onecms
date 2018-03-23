@@ -43,7 +43,7 @@ $('.tixian').unbind('click').click(function() {
                 swal.showInputError("请输入提现金额!");
                 return false
             }
-            if (!/^[1-9][\.\d]+$/.test(inputValue)) {
+            if (!/^[1-9][\.\d]*$/.test(inputValue)) {
                 swal.showInputError("请输入正确金额!");
                 return true
             }
