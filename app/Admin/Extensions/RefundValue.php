@@ -47,7 +47,7 @@ $('.paylog-refund').unbind('click').click(function() {
                 swal.showInputError("请输入退款金额!");
                 return false
             }
-            if (!/^[1-9][.\d]+$/.test(inputValue)) {
+            if (!/^[1-9][\.\d]+$/.test(inputValue)) {
                 swal.showInputError("退款金额错误!");
                 return true
             }
