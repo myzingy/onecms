@@ -44,7 +44,7 @@ $('.tixian').unbind('click').click(function() {
                 return false
             }
             if (!/^[1-9][0-9]*$/.test(inputValue)) {
-                swal.showInputError("提现金额错误!");
+                swal.showInputError("提现金额必须是整数!");
                 return true
             }
             if (inputValue <1 || inputValue>maxRefundFee) {

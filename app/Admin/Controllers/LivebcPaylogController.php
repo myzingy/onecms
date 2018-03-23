@@ -106,17 +106,18 @@ class LivebcPaylogController extends Controller
             if(Auth::isLecturer()){
                 $grid->model()->where(['expid'=>Admin::user()->id]);
             }
+            $grid->model()->where('state','<>',LivebcPaylog::STATE_WZF);
             $grid->trade_no('订单号');
             $grid->openid('OPENID');
             $grid->column('mpuser.nickname','订阅者昵称');
             $grid->column('expert.real_name','讲师姓名');
             $grid->fee('金额')->display(function ($fee) {
-                return $fee/1;
+                return $fee/100;
             });
             $grid->timestamp('订阅时间');
             $grid->days('订阅天数');
             $grid->refund_fee('已退金额')->display(function ($fee) {
-                return $fee/1;
+                return $fee/100;
             });
 
             $grid->column('state','支付状态')->display(function ($state) {
@@ -138,7 +139,11 @@ class LivebcPaylogController extends Controller
                 $filter->disableIdFilter();
                 $filter->between('timestamp', '下单时间')->datetime();
                 $filter->like('mpuser.nickname', '订阅者昵称');
-                $filter->in('state', '支付状态')->checkbox(LivebcPaylog::STATE);
+                $filter->in('state', '支付状态')->checkbox([
+                    LivebcPaylog::STATE_YZF=>'支付成功',
+                    LivebcPaylog::STATE_YTK=>'已退款',
+                    LivebcPaylog::STATE_YWC=>'订单完成',
+                ]);
 
             });
         });

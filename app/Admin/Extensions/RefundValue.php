@@ -20,8 +20,8 @@ class RefundValue extends AbstractDisplayer
             || (strtotime($this->row->timestamp)+(86400*$this->row->days))<time() ) return "";
         $feeDay=$this->row->fee/$this->row->days;
         $lastDays=$this->row->days-ceil((time()-strtotime($this->row->timestamp))/86400);
-        $this->defRefundFee=(int)($lastDays*$feeDay);
-        $this->maxRefundFee=$this->row->fee-$this->row->refund_fee;
+        $this->defRefundFee=number_format(($lastDays*$feeDay)/100,2);
+        $this->maxRefundFee=($this->row->fee-$this->row->refund_fee)/100;
         $script = <<<SCRIPT
 
 $('.paylog-refund').unbind('click').click(function() {
