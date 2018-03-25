@@ -152,9 +152,17 @@ class LivebcExpertController extends Controller
                 ->options(['免费直播','收费直播'])->default(function() use ($form){
                     $feeType=$form->model()->discount<1?0:1;
                     if($feeType==0){
-                        echo('<script>$(function(){$(\'input[name="fee_bc"]\').parents(\'.form-group\').hide();$(\'input[name="discount"]\').parents(\'.form-group\').hide();});</script>');
+
+                        if(Auth::isLecturer()){
+                            echo('<script>$(function(){$(\'input[name="fee_type"]\').parents(\'.form-group\').hide();});</script>');
+                            echo('<script>$(function(){$(\'input[name="fee_bc"]\').parents(\'.form-group\').remove();$(\'input[name="discount"]\').parents(\'.form-group\').remove();});</script>');
+                        }else{
+                            echo('<script>$(function(){$(\'input[name="fee_bc"]\').parents(\'.form-group\').hide();$(\'input[name="discount"]\').parents(\'.form-group\').hide();});</script>');
+                        }
                     }else{
-                        echo('<script>$(function(){$(\'input[name="fee_type"]\').parents(\'.form-group\').hide();});</script>');
+                        if(Auth::isLecturer()){
+                            echo('<script>$(function(){$(\'input[name="fee_type"]\').parents(\'.form-group\').hide();});</script>');
+                        }
                     }
                     return $feeType;
                 });
