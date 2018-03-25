@@ -225,7 +225,7 @@ class LivebcDailyController extends Controller
         \Log::info('lvbc-refund-res:'.$res);
         if($res=='OK'){
             $m=LivebcDaily::create([
-                'fee'=>$fee,
+                'fee'=>$fee*100,
                 'expid'=>$expid,
                 'type'=>LivebcDaily::TYPE_TX,
                 'timestamp'=>date("Y-m-d H:i:s",time()),
@@ -237,10 +237,13 @@ class LivebcDailyController extends Controller
         return $m;
     }
     function curl_get_contents($url,$timeout=1) {
+        list($url,$post_data)=explode('?',$url);
         $curlHandle = curl_init();
         curl_setopt( $curlHandle , CURLOPT_URL, $url );
         curl_setopt( $curlHandle , CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt( $curlHandle , CURLOPT_TIMEOUT, $timeout );
+        curl_setopt( $curlHandle, CURLOPT_POST, 1);
+        curl_setopt( $curlHandle, CURLOPT_POSTFIELDS, $post_data);
         $result = curl_exec( $curlHandle );
         curl_close( $curlHandle );
         return $result;

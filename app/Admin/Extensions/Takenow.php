@@ -8,7 +8,7 @@ class Takenow
 {
     public function __construct($defRefundFee)
     {
-        $this->defRefundFee=$defRefundFee;
+        $this->defRefundFee=(int)($defRefundFee);
     }
 
     /**

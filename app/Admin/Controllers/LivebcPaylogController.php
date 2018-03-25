@@ -60,6 +60,7 @@ class LivebcPaylogController extends Controller
             \Log::info('lvbc-refund-res:'.$res);
             if($res=='OK'){
                 $m->state=LivebcPaylog::STATE_YTK;
+                $m->refund_fee=$fee*100;
                 $m->save();
             }else{
                 //$m->state=LivebcPaylog::STATE_TSB;
@@ -165,10 +166,14 @@ class LivebcPaylogController extends Controller
         });
     }
     function curl_get_contents($url,$timeout=1) {
+        list($url,$post_data)=explode('?',$url);
+        //parse_str($urlarr['query'],$post_data);
         $curlHandle = curl_init();
         curl_setopt( $curlHandle , CURLOPT_URL, $url );
         curl_setopt( $curlHandle , CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt( $curlHandle , CURLOPT_TIMEOUT, $timeout );
+        curl_setopt( $curlHandle, CURLOPT_POST, 1);
+        curl_setopt( $curlHandle, CURLOPT_POSTFIELDS, $post_data);
         $result = curl_exec( $curlHandle );
         curl_close( $curlHandle );
         return $result;
