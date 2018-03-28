@@ -148,6 +148,7 @@ class LivebcExpertController extends Controller
 
             $form->text('name', '直播名称');
             $form->textarea('notice', '直播公告')->rows(10);
+            $form->textarea('intro', '讲师介绍')->rows(10);
             $form->radio('fee_type','是否收费')
                 ->options(['免费直播','收费直播'])->default(function() use ($form){
                     $feeType=$form->model()->discount<1?0:1;

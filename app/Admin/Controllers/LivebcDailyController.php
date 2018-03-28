@@ -216,7 +216,7 @@ class LivebcDailyController extends Controller
     function trans(){
         $fee=Input::get('fee','');
         $expid=Admin::user()->id;
-        $url='http://dv.cnfol.com/livebc/trans?expid='
+        $url='http://dv.cnfol.com/lvbc/trans?expid='
             .$expid.'&fee='
             .$fee.'&code='
             .md5($expid.$fee.'OJjjfdfjsdfsdfji@!&*@^*&^^jjjfdsfjds');

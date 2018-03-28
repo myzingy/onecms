@@ -131,9 +131,16 @@ class QuestionController extends Controller
             $grid->answer('答案')->display(function($answer){
                 return '<div style="width: 250px">'.$answer.'</div>';
             });
-            $grid->ispub('公开提问？')->display(function($ispub){
-                return Question::getIspubStr($ispub);
-            });
+
+//            $grid->ispub('公开提问？')->display(function($ispub){
+//                return Question::getIspubStr($ispub);
+//            });
+            $states = [
+                'on'  => ['value' => 0, 'text' => '不公开', 'color' => 'default'],
+                'off' => ['value' => 1, 'text' => '公开', 'color' => 'primary'],
+            ];
+            $grid->ispub('公开提问？')->select(['不公开','公开']);
+
             $grid->column('paylog.state','支付状态')->display(function ($state) {
                 return Paylog::getStateStr($state);
             });
@@ -213,6 +220,7 @@ class QuestionController extends Controller
             //\Log::info('form:'.json_encode($form));
             $form->text('question', '问题');
             $form->editor('answer', '回复');
+            $form->hidden('ispub');
             $this->changed=false;
             $form->saving(function (Form $form){
                 //...
