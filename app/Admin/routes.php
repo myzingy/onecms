@@ -35,4 +35,5 @@ Route::group([
     $router->resource('/livebcSubs', LivebcSubsController::class);
     $router->resource('/livebcPaylog', LivebcPaylogController::class);
     $router->resource('/livebcDaily', LivebcDailyController::class);
+    $router->resource('/livebcApp', LivebcAppController::class);
 });

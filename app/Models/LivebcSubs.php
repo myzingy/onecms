@@ -15,6 +15,7 @@ class LivebcSubs extends Model
     protected $table = 'livebc_subs';
     protected $primaryKey = 'id';
     public $timestamps = false;
+    protected $fillable = ['expid','openid','expires','timestamp','state'];
     public function expert()
     {
         return $this->hasOne(Expert::class,'expid','expid');
