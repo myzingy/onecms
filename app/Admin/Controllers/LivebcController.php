@@ -118,11 +118,12 @@ class LivebcController extends Controller
             $form->editor('content', '点评内容')->rules('required', [
                 'required' => '必须填写',
             ]);;
-            $form->time('timestamp', '时间')->default(date('H:i:s',time()));
+            //$form->time('timestamp', '时间')->default(date('H:i:s',time()));
+            $form->hidden('timestamp')->default(date('H:i:s',time()));
             $js=<<<JSEND
 <script>
 $(function(){
-    $('.form-horizontal .box-footer').css('margin-top','-90px'); 
+    $('.form-horizontal .box-footer').css('margin-top','-30px'); 
     $('.form-horizontal').prev().remove(); 
 });
 </script>
