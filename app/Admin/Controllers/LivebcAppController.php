@@ -127,7 +127,6 @@ class LivebcAppController extends Controller
                     $m->save();
                 }
             });
-            return back()->with(compact('success'));
         });
     }
 }
