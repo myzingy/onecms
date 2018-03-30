@@ -87,7 +87,7 @@ class LivebcExpertController extends Controller
                         'name'=>$name,
                         'notice'=>'',
                         'fee_bc'=>100,
-                        'state'=>LivebcExpert::STATE_ENABLE,
+                        'enable'=>LivebcExpert::STATE_ENABLE,
                         'discount'=>0
                     ]);
                     $LivebcExpert->save();
