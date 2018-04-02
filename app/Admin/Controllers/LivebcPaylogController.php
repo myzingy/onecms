@@ -147,6 +147,13 @@ class LivebcPaylogController extends Controller
                 ]);
 
             });
+            $grid->footer(function(){
+                if(Auth::isAdministrator()){
+                    echo view('admin.grid.total', ['total' => '[4,7]']);
+                }else{
+                    echo view('admin.grid.total', ['total' => '[4,7]']);
+                }
+            });
         });
     }
 
