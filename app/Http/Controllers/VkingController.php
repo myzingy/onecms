@@ -24,10 +24,26 @@ class VkingController extends Controller
 END;
         $pass=Input::get($input);
         if($pass=='778899'){
-            $expid=Input::get('expid',137);
-            $selected=[
-                $expid=>'selected="selected"'
+            $experts=[
+                '137'=>[
+                    'expid'=>137,
+                    'name'=>'林荫大道123(石寿玉)',
+                    'asker_name'=>'林荫大道',
+                ],
+                '114'=>[
+                    'expid'=>114,
+                    'name'=>'金鼎股战场(杨惊涛)',
+                    'asker_name'=>'金鼎',
+                ],
+                '111'=>[
+                    'expid'=>111,
+                    'name'=>'狗蛋私坊(蒋晓明)',
+                    'asker_name'=>'狗蛋',
+                ]
+
             ];
+            $expid=Input::get('expid',137);
+            $experts[$expid]['selected']='selected="selected"';
             echo <<<ENDS
 <form action="" method="post" style="" id="changeExpid">
 <input type="hidden" name="_token" value="{$input}"/>
@@ -36,15 +52,21 @@ END;
 <div>
     <select name="expid" style="font-size: 35px;padding: 5px 0 20px;margin: 20px 0;width:100%;" 
         onchange="document.getElementById('changeExpid').submit();">
-            <option value="137" {$selected['137']}>林荫大道123(石寿玉)</option>
-            <option value="114" {$selected['114']}>金鼎股战场(杨惊涛)</option>
-            <option value="111" {$selected['111']}>狗蛋私坊(蒋晓明)</option>
+ENDS;
+            foreach ($experts as $ex){
+                echo "<option value=\"{$ex['expid']}\" {$ex['selected']}>{$ex['name']}</option>";
+            }
+            echo <<<ENDS
         </select> 
 </div>
 </form>
 ENDS;
 
-            $res=\DB::table('question')->where(['expid'=>$expid,'state'=>1])->orderByDesc('timestamp')->limit(50)->get();
+            $res=\DB::table('question')->where([
+                'expid'=>$expid,
+                'state'=>1,
+                'asker_name'=>$experts[$expid]['asker_name']
+            ])->orderByDesc('timestamp')->limit(50)->get();
             foreach ($res as $q){
                 echo <<<END
 <div>
