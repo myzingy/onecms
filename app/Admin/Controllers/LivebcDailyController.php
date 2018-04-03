@@ -155,16 +155,16 @@ class LivebcDailyController extends Controller
             });
             $grid->timestamp('操作时间');
             if($isLecturer){
-                $grid->fee('金额')->display(function ($fee) {
+                $grid->fee('收支金额')->display(function ($fee) {
                     $fee=$fee/100;
                     if($this->type==LivebcDaily::TYPE_TX) return -$fee;
                     return $fee;
                 });
             }else{
-                $grid->column('fee','流水金额')->display(function ($fee) {
+                $grid->column('fee','收支金额')->display(function ($fee) {
                     $fee=$fee/100;
                     if($this->type==LivebcDaily::TYPE_TX) return -$fee;
-                    return number_format($fee/0.6,2);
+                    return number_format($fee,2);
                 });
                 $grid->column('fee_dv','平台收入')->display(function ($fee) {
                     if($this->type==LivebcDaily::TYPE_TX) return 0;
