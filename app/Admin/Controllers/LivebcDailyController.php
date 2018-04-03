@@ -54,7 +54,7 @@ class LivebcDailyController extends Controller
             }
             $fee[LivebcDaily::TYPE_TX]=LivebcDaily::where($where)->sum('fee')/100;
             if($isLecturer) {
-                $fee[LivebcDaily::TYPE_RZ]=$fee[LivebcDaily::TYPE_RZ]*0.6;
+                $fee[LivebcDaily::TYPE_RZ]=$fee[LivebcDaily::TYPE_RZ];
                 $box = new Box('直播收入', number_format($fee[LivebcDaily::TYPE_RZ], 2));
                 $box->style('danger');
                 //$box->solid();
@@ -76,11 +76,11 @@ class LivebcDailyController extends Controller
                 );
                 $row->column(4, $box);
             }else{
-                $box = new Box('直播流水', number_format($fee[LivebcDaily::TYPE_RZ], 2));
+                $box = new Box('直播流水', number_format($fee[LivebcDaily::TYPE_RZ]/0.6, 2));
                 $box->style('warning');
                 $row->column(3, $box);
 
-                $box = new Box('平台收入', number_format($fee[LivebcDaily::TYPE_RZ]*0.4, 2));
+                $box = new Box('平台收入', number_format($fee[LivebcDaily::TYPE_RZ]*(2/3), 2));
                 $box->style('danger');
                 $row->column(3, $box);
 
@@ -88,7 +88,7 @@ class LivebcDailyController extends Controller
                 $box->style('success');
                 $row->column(3, $box);
 
-                $box = new Box('未提现', number_format($fee[LivebcDaily::TYPE_RZ]*0.6 - $fee[LivebcDaily::TYPE_TX], 2));
+                $box = new Box('未提现', number_format($fee[LivebcDaily::TYPE_RZ] - $fee[LivebcDaily::TYPE_TX], 2));
                 $box->style('primary');
                 $row->column(3, $box);
             }
@@ -158,17 +158,17 @@ class LivebcDailyController extends Controller
                 $grid->fee('金额')->display(function ($fee) {
                     $fee=$fee/100;
                     if($this->type==LivebcDaily::TYPE_TX) return -$fee;
-                    return $fee*0.6;
+                    return $fee;
                 });
             }else{
                 $grid->column('fee','流水金额')->display(function ($fee) {
                     $fee=$fee/100;
                     if($this->type==LivebcDaily::TYPE_TX) return -$fee;
-                    return $fee;
+                    return number_format($fee/0.6,2);
                 });
                 $grid->column('fee_dv','平台收入')->display(function ($fee) {
                     if($this->type==LivebcDaily::TYPE_TX) return 0;
-                    return ($this->fee*0.4)/100;
+                    return number_format(($this->fee*(2/3))/100,2);
                 });
             }
             //$grid->expires('到期时间');
