@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Extensions\ExpoterPaylog;
 use App\Models\Auth;
 use App\Models\Paylog;
 
@@ -126,7 +127,11 @@ class PaylogController extends Controller
             }
             $grid->disableRowSelector();
             //disableExport
-            $grid->disableExport();
+            if(Auth::isAdmin()){
+                $grid->exporter(new ExpoterPaylog());
+            }else{
+                $grid->disableExport();
+            }
             //disableCreation
             $grid->disableCreation();
             $grid->disableActions();
