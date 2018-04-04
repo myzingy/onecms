@@ -234,7 +234,6 @@ class LivebcDailyController extends Controller
         }else{
             throw new \Exception('提现失败');
         }
-        return $m;
     }
     function curl_get_contents($url,$timeout=1) {
         list($url,$post_data)=explode('?',$url);
