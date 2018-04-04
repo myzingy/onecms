@@ -224,13 +224,13 @@ class LivebcDailyController extends Controller
         $res=$this->curl_get_contents($url,30);
         \Log::info('lvbc-refund-res:'.$res);
         if($res=='OK'){
-            $m=LivebcDaily::create([
-                'fee'=>$fee*100,
-                'expid'=>$expid,
-                'type'=>LivebcDaily::TYPE_TX,
-                'timestamp'=>date("Y-m-d H:i:s",time()),
-            ]);
-            $m->save();
+//            $m=LivebcDaily::create([
+//                'fee'=>$fee*100,
+//                'expid'=>$expid,
+//                'type'=>LivebcDaily::TYPE_TX,
+//                'timestamp'=>date("Y-m-d H:i:s",time()),
+//            ]);
+//            $m->save();
         }else{
             throw new \Exception('提现失败');
         }
