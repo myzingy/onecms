@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Extensions\ExpoterLivebcPaylog;
 use App\Models\Auth;
 use App\Models\LivebcPaylog;
 
@@ -129,7 +130,11 @@ class LivebcPaylogController extends Controller
             }
             $grid->disableRowSelector();
             //disableExport
-            $grid->disableExport();
+            if(Auth::isAdmin()){
+                $grid->exporter(new ExpoterLivebcPaylog());
+            }else{
+                $grid->disableExport();
+            }
             //disableCreation
             $grid->disableCreation();
             $grid->disableActions();
@@ -139,6 +144,7 @@ class LivebcPaylogController extends Controller
                 // 禁用id查询框
                 $filter->disableIdFilter();
                 $filter->between('timestamp', '下单时间')->datetime();
+                $filter->like('expert.real_name', '讲师姓名');
                 $filter->like('mpuser.nickname', '订阅者昵称');
                 $filter->in('state', '支付状态')->checkbox([
                     LivebcPaylog::STATE_YZF=>'支付成功',
