@@ -195,6 +195,13 @@ class LivebcDailyController extends Controller
                 $filter->in('type', '操作类型')->checkbox(LivebcDaily::TYPE);
 
             });
+            $grid->footer(function(){
+                if(Auth::isLecturer()){
+                    echo view('admin.grid.total', ['total' => '[2]']);
+                }else{
+                    echo view('admin.grid.total', ['total' => '[2,3]']);
+                }
+            });
         });
     }
 
