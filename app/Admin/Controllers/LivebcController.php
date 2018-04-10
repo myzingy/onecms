@@ -119,7 +119,7 @@ class LivebcController extends Controller
                 'required' => '必须填写',
             ]);;
             //$form->time('timestamp', '时间')->default(date('H:i:s',time()));
-            $form->hidden('timestamp')->default(date('H:i:s',time()));
+            //$form->hidden('timestamp')->default(date('H:i:s',time()));
             $js=<<<JSEND
 <script>
 $(function(){
@@ -131,7 +131,7 @@ JSEND;
 
             $form->html($js);
             $form->saving(function(Form $form){
-                $form->timestamp=date('Y-m-d '.$form->timestamp,time());
+                $form->model()->timestamp=date('Y-m-d H:i:s',time());
                 $form->model()->expid=Admin::user()->id;
             });
             $form->saved(function(Form $form){
