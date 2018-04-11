@@ -115,6 +115,9 @@ class LivebcSubsController extends Controller
                 $filter->disableIdFilter();
                 //$filter->equal('expires', '到期时间')->date();
                 $filter->between('timestamp', '订阅时间')->datetime();
+                if(!Auth::isLecturer()){
+                    $filter->like('expert.real_name', '讲师姓名');
+                }
                 $filter->like('mpuser.nickname', '订阅者昵称');
                 $filter->in('state', '订阅类型')->checkbox(LivebcSubs::STATE);
 
