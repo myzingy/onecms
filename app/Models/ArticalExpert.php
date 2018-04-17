@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class ArticalExpert extends Model
 {
@@ -38,8 +39,13 @@ class ArticalExpert extends Model
     }
     public function countViews(){//阅读量
         return $this->hasMany(ArticalStat::class,'expid','expid')
-            ->where('type='.ArticalStat::TYEP_YD)
+            ->where(['type'=>ArticalStat::TYEP_YD])
             ->count();
+    }
+    public function countFee(){//打赏收入
+        return $this->hasMany(ArticalPaylog::class,'expid','expid')
+            ->where(['state'=>ArticalPaylog::STATE_YZF])
+            ->sum('fee');
     }
     public function expert()
     {

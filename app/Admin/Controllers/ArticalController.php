@@ -24,8 +24,8 @@ class ArticalController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('文章管理');
+            $content->description('');
 
             $content->body($this->grid());
         });
@@ -73,10 +73,18 @@ class ArticalController extends Controller
     {
         return Admin::grid(Artical::class, function (Grid $grid) {
 
-            $grid->id('ID')->sortable();
+            $grid->disableRowSelector();
+            $grid->disableExport();
 
-            $grid->created_at();
-            $grid->updated_at();
+            $grid->id('ID')->sortable();
+            $grid->expid('讲师ID')->sortable();
+            $grid->column('expert.real_name','讲师姓名');
+            $grid->title('标题');
+            $grid->url('阅读原文');
+            $grid->column('tipprices','打赏金额');
+            $grid->column('tipsign','打赏感谢语');
+
+
         });
     }
 

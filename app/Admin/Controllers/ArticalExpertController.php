@@ -79,8 +79,17 @@ class ArticalExpertController extends Controller
             $grid->column('expert.real_name','讲师姓名');
             $grid->enable('状态')->editable('select', ArticalExpert::ENABLE);
             $grid->column('tipenable','打赏状态')->editable('select', ArticalExpert::TIPENABLE);
-            $grid->column('tipprices','打赏金额');
-            $grid->column('tipsign','打赏感谢语');
+            //$grid->column('tipprices','打赏金额');
+            //$grid->column('tipsign','打赏感谢语');
+            $grid->column('countArtical','文章数')->display(function(){
+                return $this->countArtical();
+            });
+            $grid->column('countViews','阅读量')->display(function(){
+                return $this->countViews();
+            });
+            $grid->column('countFee','打赏收入')->display(function(){
+                return $this->countFee();
+            });
 
             $grid->disableRowSelector();
             $grid->disableExport();
