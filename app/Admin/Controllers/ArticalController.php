@@ -11,6 +11,7 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use Illuminate\Support\Facades\Input;
 
 class ArticalController extends Controller
 {
@@ -128,7 +129,13 @@ class ArticalController extends Controller
             $form->hidden('expid')->default(Admin::user()->id);
             $form->text('title','文章标题')->rules('required|max:80');
             $form->editor('content', '文章内容');
-            $form->url('url', '查看原文')
+            $form->text('url', '查看原文')->rules(function (Form $form){
+                $url=Input::get('url');
+                if(!preg_match("/^http(s)?:\/\/.{4,}/",$url)){
+                    throw new \Exception('查看原文链接地址错误');
+                }
+                return false;
+            })
                 ->placeholder('请输入查看原文链接地址')
                 ->help('http://www.baidu.com/index.html 必须带http或https');
             $form->saving(function (Form $form){
