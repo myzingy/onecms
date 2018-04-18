@@ -26,6 +26,14 @@ class WangEditor extends Field
         $name = $this->formatName($this->column);
         $uploadImgUrl = config('wang-editor.uploadImgUrl', '/admin/upload');
         $token = csrf_token();
+        $table=$this->form->model()->getTable();
+        $menu="";
+        if('artical_notes'==$table){
+            $menu=<<<END
+editor.customConfig.menus = ['emoticon'];
+END;
+
+        }
         $this->script = <<<EOT
 
 var E = window.wangEditor
@@ -59,6 +67,7 @@ editor.customConfig.uploadImgHooks = {
         swal(result.message, '', 'warning');
     },
 }
+{$menu}
 editor.create()
 
 EOT;

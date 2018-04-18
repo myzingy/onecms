@@ -57,8 +57,9 @@ $('.question-stick').unbind('click').click(function() {
 
 SCRIPT;
         Admin::script($script);
-        if($this->row->pinned_time
-            && $this->row->pinned_time>$this->row->timestamp){//已经置顶
+        $pinned_time=empty($this->row->pinned_time)?$this->row->pinnedtime:$this->row->pinned_time;
+        if($pinned_time
+            && $pinned_time>$this->row->timestamp){//已经置顶
             $name='已置顶';
             $title='已置顶,点击取消';
             $class='danger';

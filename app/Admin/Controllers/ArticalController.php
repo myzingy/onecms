@@ -131,10 +131,9 @@ class ArticalController extends Controller
             $form->editor('content', '文章内容');
             $form->text('url', '查看原文')->rules(function (Form $form){
                 $url=Input::get('url');
-                if(!preg_match("/^http(s)?:\/\/.{4,}/",$url)){
+                if($url && !preg_match("/^http(s)?:\/\/.{4,}/",$url)){
                     throw new \Exception('查看原文链接地址错误');
                 }
-                return false;
             })
                 ->placeholder('请输入查看原文链接地址')
                 ->help('http://www.baidu.com/index.html 必须带http或https');
