@@ -13,4 +13,14 @@ class ArticalPaylog extends Model
 
     public $timestamps = false;
 
+    public function mpuser(){
+        return $this->hasOne(Mpuser::class,'opid_mp','opid');
+    }
+    public function artical(){
+        return $this->belongsTo(Artical::class,'artid','id');
+    }
+    public function expert()
+    {
+        return $this->hasOne(Expert::class,'expid','expid');
+    }
 }
