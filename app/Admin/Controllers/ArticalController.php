@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Input;
 class ArticalController extends Controller
 {
     use ModelForm;
-
     /**
      * Index interface.
      *
