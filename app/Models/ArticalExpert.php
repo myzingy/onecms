@@ -26,11 +26,11 @@ class ArticalExpert extends Model
     protected $primaryKey = 'expid';
 
     public static function getStateStr($state=self::ENABLE_NO,$const='ENABLE'){
-
-        if(empty(self::$const[$state])){
-            return self::$const[self::ENABLE_NO];
+        eval("\$arr=self::$const;");
+        if(empty($arr[$state])){
+            return $arr[self::ENABLE_NO];
         }
-        return self::$const[$state];
+        return $arr[$state];
     }
 
     public function countArtical(){//文章数

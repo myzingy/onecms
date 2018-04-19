@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Models\ArticalExpert;
 
+use App\Models\Auth;
 use App\Models\Expert;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -75,9 +76,18 @@ class ArticalExpertController extends Controller
     {
         return Admin::grid(ArticalExpert::class, function (Grid $grid) {
 
+
             $grid->expid('讲师ID')->sortable();
             $grid->column('expert.real_name','讲师姓名');
-            $grid->enable('状态')->editable('select', ArticalExpert::ENABLE);
+            if(Auth::isLecturer()){
+                $grid->model()->where(['expid'=>Admin::user()->id]);
+                $grid->enable('状态')->display(function($enable){
+                    return ArticalExpert::getStateStr($enable);
+                });
+                $grid->disableCreation();
+            }else{
+                $grid->enable('状态')->editable('select', ArticalExpert::ENABLE);
+            }
             $grid->column('tipenable','打赏状态')->editable('select', ArticalExpert::TIPENABLE);
             //$grid->column('tipprices','打赏金额');
             //$grid->column('tipsign','打赏感谢语');
@@ -119,10 +129,15 @@ class ArticalExpertController extends Controller
         return Admin::form(ArticalExpert::class, function (Form $form) {
 
             $form->ignore(['expert.real_name','tipprices']);
-            $form->text('expert.real_name', '讲师姓名')->rules('required');
-            $form->radio('enable', '状态')
-                ->options(ArticalExpert::ENABLE)
-                ->default(ArticalExpert::ENABLE_NO);
+            if(!Auth::isLecturer()) {
+                $form->text('expert.real_name', '讲师姓名')->rules('required');
+
+                $form->radio('enable', '状态')
+                    ->options(ArticalExpert::ENABLE)
+                    ->default(ArticalExpert::ENABLE_NO);
+            }else{
+                $form->hidden('expert.real_name');
+            }
 
             $form->radio('tipenable', '打赏状态')
                 ->options(ArticalExpert::TIPENABLE)
