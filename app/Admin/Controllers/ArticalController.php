@@ -76,6 +76,9 @@ class ArticalController extends Controller
 
             $grid->disableRowSelector();
             $grid->disableExport();
+            if(Auth::isLecturer()){
+                $grid->model()->where(['expid'=>Admin::user()->id]);
+            }
 
             $grid->id('ID')->sortable();
             $grid->title('标题');

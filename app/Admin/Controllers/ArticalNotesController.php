@@ -11,6 +11,7 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 
 class ArticalNotesController extends Controller
@@ -91,10 +92,19 @@ class ArticalNotesController extends Controller
             $title=Input::get('artical.title');
             if($artid && !$title){
                 $where['artid']=$artid;
+            }else{
+                if(Auth::isLecturer()){
+                    //$where=DB::raw(' artid in (select id from artical where expid='.Admin::user()->id.') and 1 ');
+                    //$where['artid']=['in'=>DB::raw('select *')];
+                    $where['artical.expid']=Admin::user()->id;
+                    $grid->model()
+                        ->select('artical_notes.*')
+                        ->join('artical',function($join){
+                        $join->on('artical.id','=','artid');
+                    });
+                }
             }
-            if(Auth::isLecturer()){
-                $where['artical.expid']=Admin::user()->id;
-            }
+
             $grid->model()->where($where);
             $grid->column('artical.title','文章标题');
             $grid->column('mpuser.nickname','评论者')->style('width:80px;');
