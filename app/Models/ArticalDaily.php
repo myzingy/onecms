@@ -8,6 +8,7 @@ class ArticalDaily extends Model
 {
     const TYPE_RZ=0;    //入账
     const TYPE_ZC=1;    //支出
+    const TYPE_TX=1;    //提现
     const TYPE=[
         self::TYPE_RZ=>'入账',
         self::TYPE_ZC=>'支出'
