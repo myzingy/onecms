@@ -94,8 +94,6 @@ class ArticalNotesController extends Controller
                 $where['artid']=$artid;
             }else{
                 if(Auth::isLecturer()){
-                    //$where=DB::raw(' artid in (select id from artical where expid='.Admin::user()->id.') and 1 ');
-                    //$where['artid']=['in'=>DB::raw('select *')];
                     $where['artical.expid']=Admin::user()->id;
                     $grid->model()
                         ->select('artical_notes.*')
