@@ -147,13 +147,13 @@ LINK;
             $form->text('title','文章标题')->rules('required|max:80');
             $form->text('author','文章作者')->rules('required|max:20');
             $form->editor('content', '文章内容');
-            $form->text('url', '查看原文')->rules(function (Form $form){
+            $form->text('url', '阅读原文')->rules(function (Form $form){
                 $url=Input::get('url');
                 if($url && !preg_match("/^http(s)?:\/\/.{4,}/",$url)){
-                    throw new \Exception('查看原文链接地址错误');
+                    throw new \Exception('阅读原文 链接地址错误');
                 }
             })
-                ->placeholder('请输入查看原文链接地址')
+                ->placeholder('请输入 阅读原文 链接地址')
                 ->help('http://www.baidu.com/index.html 必须带http或https');
             $form->saving(function (Form $form){
                 $form->model()->timestamp=date('Y-m-d H:i:s',time());
