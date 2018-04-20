@@ -86,7 +86,17 @@ class ArticalController extends Controller
             }
 
             $grid->id('ID')->sortable();
-            $grid->title('标题');
+            $grid->title('标题')->display(function($title){
+                $ArticalID=$this->id;
+                return <<<LINK
+<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/artical/view?id={$ArticalID}&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect" 
+class="openWindow" 
+target="black"
+onclick="swal({title:'链接地址',text:'<div style=\'word-break: break-all;\'>'+this.href+'</div>',html:true});return false;">
+{$title}
+</a>
+LINK;
+            });
             $grid->timestamp('发布时间');
 
             //$grid->expid('讲师ID')->sortable();
@@ -135,6 +145,7 @@ class ArticalController extends Controller
             $form->hidden('id');
             $form->hidden('expid')->default(Admin::user()->id);
             $form->text('title','文章标题')->rules('required|max:80');
+            $form->text('author','文章作者')->rules('required|max:20');
             $form->editor('content', '文章内容');
             $form->text('url', '查看原文')->rules(function (Form $form){
                 $url=Input::get('url');
