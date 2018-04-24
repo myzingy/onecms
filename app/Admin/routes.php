@@ -42,4 +42,7 @@ Route::group([
     $router->resource('/articalPaylog', ArticalPaylogController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
     $router->resource('/articalNotes', ArticalNotesController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
     $router->resource('/articalExpert', ArticalExpertController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
+
+    $router->resource('/redpackSetting', RedpackSettingController::class);
+    $router->resource('/redpack', RedpackController::class);
 });
