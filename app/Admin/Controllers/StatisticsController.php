@@ -188,7 +188,8 @@ class StatisticsController extends Controller
             $stime=time()-86400;
             DB::connection()->enableQueryLog();
             $fee=$paylog->whereBetween('timestamp',
-                [date('Y-m-d 21:00:00',$stime), date('Y-m-d 21:00:00',time())]
+                //[date('Y-m-d 21:00:00',$stime), date('Y-m-d 21:00:00',time())]
+                [date('Y-m-d 00:00:00',time()), date('Y-m-d 23:59:59',time())]
             )
                 ->where('state',Paylog::STATE_YZF)
                 ->sum('fee');
