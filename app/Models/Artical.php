@@ -16,12 +16,12 @@ class Artical extends Model
     }
     public function countViews(){//阅读数
         return $this->hasMany(ArticalStat::class,'artid','id')
-            ->where(['type'=>ArticalStat::TYEP_YD])
+            ->where(['tp'=>ArticalStat::TYEP_YD])
             ->count();
     }
     public function countStats(){//点赞数
         return $this->hasMany(ArticalStat::class,'artid','id')
-            ->where(['type'=>ArticalStat::TYEP_DZ])
+            ->where(['tp'=>ArticalStat::TYEP_DZ])
             ->count();
     }
     public function countFee(){//打赏收入
