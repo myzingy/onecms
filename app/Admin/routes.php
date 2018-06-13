@@ -12,7 +12,7 @@ Route::group([
 
     //$router->get('/', 'HomeController@index');
     $router->get('/',function (){
-        return Redirect::to("/admin/question");
+        return Redirect::to("/admin/artical");
     });
     $router->resource('lecturer/apply', ExpertApplicationController::class);
     $router->resource('lecturer/users', ExpertController::class);
