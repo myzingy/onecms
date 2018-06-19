@@ -45,4 +45,6 @@ Route::group([
 
     $router->resource('/redpackSetting', RedpackSettingController::class);
     $router->resource('/redpack', RedpackController::class);
+
+    $router->resource('/tipsetting', TipsettingController::class);
 });

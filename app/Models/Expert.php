@@ -41,38 +41,38 @@ class Expert extends Model
         $info = ExpertApplication::find($form->apid)->toArray();
         if($info['state'] != ExpertApplication::STATE_PASS) return;
         DB::beginTransaction();
-        $user_id = DB::table('admin_users')->insertGetId(
-            [
-                'username' => $info['mobile'],
-                'name' => $info['real_name'],
-                'password' => bcrypt('123456'),
-                'created_at'=>date('Y-m-d H:i:s',time()),
-                'updated_at'=>date('Y-m-d H:i:s',time()),
-            ]);
-        $res = $user_id && DB::table('admin_role_users')->insert(
+        try{
+            $user_id = DB::table('admin_users')->insertGetId(
                 [
-                    'role_id' => 4,//讲师
-                    'user_id' => $user_id
+                    'username' => $info['mobile'],
+                    'name' => $info['real_name'],
+                    'password' => bcrypt('123456'),
+                    'created_at'=>date('Y-m-d H:i:s',time()),
+                    'updated_at'=>date('Y-m-d H:i:s',time()),
                 ]);
-        $data = array_intersect_key($info,array_flip(['real_name', 'mobile', 'qq', 'mp_name', 'mp_img_url', 'wx_id', 'wx_name',
-            'wx_img_url', 'wx_qrcode', 'openid', 'unionid', 'mp_auth', 'svc_type', 'mp_appid', 'mp_secret',
-            'mp_qrcode', 'mp_verify_file_url', 'cfaid']));
-        $data = array_merge($data, [
-            'expid' => $user_id,
-            'state' => Expert::ENABLE,
-            'share_ratio' => 60,
-            'price_ask' => 100,
-            'price_see' => 88,
-            'max_question' => 0,
-            'entry_url' => '/expert/entry/'. $user_id
-        ]);
-        $res = $res && DB::table('expert')->insert($data);
-        if($res){
+            $res = $user_id && DB::table('admin_role_users')->insert(
+                    [
+                        'role_id' => 4,//讲师
+                        'user_id' => $user_id
+                    ]);
+            $data = array_intersect_key($info,array_flip(['real_name', 'mobile', 'qq', 'mp_name', 'mp_img_url', 'wx_id', 'wx_name',
+                'wx_img_url', 'wx_qrcode', 'openid', 'unionid']));
+            $data = array_merge($data, [
+                'expid' => $user_id,
+                'state' => Expert::ENABLE
+            ]);
+            DB::table('expert')->insert($data);
+
+            DB::table('tipsetting')->insert([
+                'expid' => $user_id,
+                'type'=>0,
+                'state'=>0,
+            ]);
             DB::commit();
-        }else{
-            if($info['state'] != ExpertApplication::STATE_PASS) return;
-            ExpertApplication::where('apid', '=', $form->apid)->update(['status' => ExpertApplication::STATE_IN_CHECK]);//还原
+        }catch (\Exception $e){
+            //ExpertApplication::where('apid', '=', $form->apid)->update(['state' => ExpertApplication::STATE_IN_CHECK]);//还原
             DB::rollBack();
+            //throw new \Error($e->getMessage());
         }
     }
 }

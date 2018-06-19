@@ -123,13 +123,13 @@ class ExpertController extends Controller
             $grid->mp_name('公众号名称')->popover(['placement'=>'right','column'=>'mp_qrcode']);
             $grid->openid('OpenID');
             $grid->mobile('手机号');
-            $grid->svc_type('服务方式')->display(function ($v) {
-                return !empty(Expert::$svcTypeOptions[$v]) ? Expert::$svcTypeOptions[$v] : '';
-            });
-            $grid->column('full_price','费用(提问/查看)')->display(function () {
-                return $this->price_ask.'/'.$this->price_see;
-            });
-            $grid->share_ratio('分成比例');
+//            $grid->svc_type('服务方式')->display(function ($v) {
+//                return !empty(Expert::$svcTypeOptions[$v]) ? Expert::$svcTypeOptions[$v] : '';
+//            });
+//            $grid->column('full_price','费用(提问/查看)')->display(function () {
+//                return $this->price_ask.'/'.$this->price_see;
+//            });
+//            $grid->share_ratio('分成比例');
 
 
 
@@ -200,39 +200,40 @@ class ExpertController extends Controller
                 $form->image('mp_img_url', '公众号图片')->uniqueName();
                 //$form->text('mp_qrcode', '公众号二维码');
                 $form->image('mp_qrcode','公众号二维码')->uniqueName();
-                $form->text('mp_appid', '公众号AppId');
-                $form->text('mp_secret', '公众号Secret');
-                $form->text('share_ratio', '分成比例');
-                $form->radio('mp_auth', '是否认证')->options(Expert::$enableOptions);
-                $form->text('mp_verify_file_url', 'js安全域名');//->rules('url');
+                //$form->text('mp_appid', '公众号AppId');
+                //$form->text('mp_secret', '公众号Secret');
+                //$form->text('share_ratio', '分成比例');
+                //$form->radio('mp_auth', '是否认证')->options(Expert::$enableOptions);
+                //$form->text('mp_verify_file_url', 'js安全域名');//->rules('url');
                 if(Auth::isAdministrator()){
                     $form->radio('state','状态')->options(Expert::$stateOptions);
                 }
-                $form->text('cfaname', '分析师姓名');
-                $form->text('cfaid', '分析师证件号');
+                //$form->text('cfaname', '分析师姓名');
+                //$form->text('cfaid', '分析师证件号');
 
             }else{
-                $form->display('cfaname', '分析师姓名');
-                $form->display('cfaid', '分析师证件号');
+                //$form->display('cfaname', '分析师姓名');
+                //$form->display('cfaid', '分析师证件号');
             }
 
-            $form->textarea('exp_intro', '讲师介绍');
-            if(Auth::isAdministrator() || Auth::isManager()) {
-                $form->image('exp_bg_url', '背景图')->uniqueName();
-            }
+            //$form->textarea('exp_intro', '讲师介绍');
+//            if(Auth::isAdministrator() || Auth::isManager()) {
+//                $form->image('exp_bg_url', '背景图')->uniqueName();
+//            }
+
 //            ->rules('dimensions:min_width=100,min_height=200,max_width=500,max_height=1000',[
 //                'dimensions' => '图片有效长宽为：100x200至500x1000',
 //            ]);
-            $form->text('price_ask', '提问费用')->rules('required|numeric|min:10|max:100');
-            $form->text('price_see', '查看费用')->rules('required|numeric|min:10|max:100');
-            $form->text('max_question', '每日提问上限')->rules('required|numeric|min:0');
+            //$form->text('price_ask', '提问费用')->rules('required|numeric|min:10|max:100');
+            //$form->text('price_see', '查看费用')->rules('required|numeric|min:10|max:100');
+            //$form->text('max_question', '每日提问上限')->rules('required|numeric|min:0');
             //服务方式
-            $form->radio('svc_type','服务方式')->options(ExpertApplication::$svcTypeOptions);
-            $form->display('expid', '分享地址')->with(function ($expid) {
-                return '<div style="width: 100%;word-break: break-all;"><a href="#">https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/expert/entry/'
-                    .$expid.'&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect</a>
-                    </div>';
-            });
+            //$form->radio('svc_type','服务方式')->options(ExpertApplication::$svcTypeOptions);
+//            $form->display('expid', '分享地址')->with(function ($expid) {
+//                return '<div style="width: 100%;word-break: break-all;"><a href="#">https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/expert/entry/'
+//                    .$expid.'&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect</a>
+//                    </div>';
+//            });
 
             $form->saved(function (Form $form) {
                 if($form->model()->mp_img_url && false === strpos($form->model()->mp_img_url,'http')){

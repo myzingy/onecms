@@ -145,10 +145,10 @@ class ExpertApplicationController extends Controller
             $form->image('mp_img_url', '公众号图片');
             //$form->text('mp_qrcode', '公众号二维码');
             $form->image('mp_qrcode','公众号二维码');
-            $form->text('mp_appid', '公众号AppId');
-            $form->text('mp_secret', '公众号Secret');
-            $form->select('mp_auth', '是否认证')->options(ExpertApplication::$enableOptions);
-            $form->text('mp_verify_file_url', 'js安全域名');//->rules('url');
+//            $form->text('mp_appid', '公众号AppId');
+//            $form->text('mp_secret', '公众号Secret');
+//            $form->select('mp_auth', '是否认证')->options(ExpertApplication::$enableOptions);
+//            $form->text('mp_verify_file_url', 'js安全域名');//->rules('url');
             //审核操作
             $form->radio('state','状态')->options(ExpertApplication::$statusOptions);
             $form->radio('rejected_reason','驳回原因')->options(ExpertApplication::$RejectedOptions);
