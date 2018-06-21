@@ -88,8 +88,9 @@ class ArticalController extends Controller
             $grid->id('ID')->sortable();
             $grid->title('标题')->display(function($title){
                 $ArticalID=$this->id;
+
                 return <<<LINK
-<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95a4d6b085cd926a&redirect_uri=http%3A//dv.cnfol.com/artical/view?id={$ArticalID}&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect" 
+<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3df6469b92876c23&redirect_uri=https%3A//hd.cnfoldv.com/artical/entry?aid={$ArticalID}&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect" 
 class="openWindow" 
 target="black"
 onclick="swal({title:'链接地址',text:'<div style=\'word-break: break-all;\'>'+this.href+'</div>',html:true});return false;">

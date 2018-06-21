@@ -115,6 +115,7 @@ class ArticalNotesController extends Controller
                 return $this->statReply();
             })->style('width:80px;');
             $grid->column('timestamp','评论时间')->style('width:120px;');
+            $grid->state('评论状态')->editable('select', ArticalNotes::STATE);
             $grid->pinnedtime('置顶')->stick()->sortable()->style('width:80px;');
             $grid->filter(function($filter){
                 // 如果过滤器太多，可以使用弹出模态框来显示过滤器.
@@ -139,6 +140,7 @@ class ArticalNotesController extends Controller
 
             $form->ignore(['reply']);
             $form->display('artical.title', '文章标题');
+            $form->select('state','评论状态')->options(ArticalNotes::STATE);
             $form->text('content','评论内容')->rules('required|max:1024');
             $form->editor('reply','评论内容')->rules('max:1024');
             $form->saving(function (Form $form){

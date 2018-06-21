@@ -85,6 +85,7 @@ class RedpackSettingController extends Controller
             }
             $grid->actid('ID')->sortable();
             $grid->act_name('活动名称');
+            $grid->act_desc('红包祝福语');
             $grid->column('expert.real_name','讲师');
             $grid->start_time('开始时间');
             $grid->end_time('结束时间');
@@ -126,6 +127,7 @@ class RedpackSettingController extends Controller
             $form->hidden('actid');
             //$form->hidden('expid')->default(Admin::user()->id);
             $form->text('act_name','红包活动名称')->rules('required|max:45');
+            $form->text('act_desc','红包祝福语')->rules('required|max:200');
             if(Auth::isLecturer()){
                 $form->hidden('expid')->default(Admin::user()->id);
             }else{
@@ -141,6 +143,7 @@ class RedpackSettingController extends Controller
             $form->text('total_num','总数量')->rules('required|regex:/^[1-9]\d*$/', [
                 'regex' => '必须为数字大于0的整数',
             ])->default(1);
+            $form->image('bg_img', '活动背景图')->uniqueName();
             $form->saving(function(Form $form){
                 $form->model()->total_fee=Input::get('total_feex')*100;
                 if($real_name=Input::get('expert.real_name')){
@@ -155,6 +158,12 @@ class RedpackSettingController extends Controller
                 }
                 $form->model()->start_time=Input::get('start_time')." 12:00:00";
                 $form->model()->end_time=Input::get('end_time')." 23:59:59";
+            });
+            $form->saved(function (Form $form) {
+                if($form->model()->bg_img && false === strpos($form->model()->bg_img,'http')){
+                    $form->model()->bg_img = config('filesystems.disks.admin.url') .'/'.$form->model()->bg_img;
+                    $form->model()->save();
+                }
             });
         });
     }
