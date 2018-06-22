@@ -115,6 +115,9 @@ class ArticalNotesController extends Controller
                 return $this->statReply();
             })->style('width:80px;');
             $grid->column('timestamp','评论时间')->style('width:120px;');
+//            $grid->column('pinnedtimex','pinnedtime')->display(function(){
+//                return $this->pinnedtime;
+//            })->style('width:120px;');
             $grid->state('评论状态')->editable('select', ArticalNotes::STATE);
             $grid->pinnedtime('置顶')->stick()->sortable()->style('width:80px;');
             $grid->filter(function($filter){
@@ -152,6 +155,10 @@ class ArticalNotesController extends Controller
                     if(!$form->model()->replytime){
                         $form->model()->replytime=date('Y-m-d H:i:s',time());
                     }
+                }
+                $state=Input::get('state');
+                if($state==ArticalNotes::STATE_YES){
+                    $form->model()->pinnedtime=date('Y-m-d H:i:s',time());
                 }
             });
         });

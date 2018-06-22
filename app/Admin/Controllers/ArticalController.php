@@ -117,6 +117,9 @@ LINK;
                 }
                 return $nums;
             });
+            $grid->column('enabletips','启用打赏')->display(function($enabletips){
+                return '已'.Artical::getStateStr($enabletips);
+            });
             $grid->column('countFee','打赏收入')->display(function(){
                 return $this->countFee();
             });
@@ -156,6 +159,7 @@ LINK;
             })
                 ->placeholder('请输入 阅读原文 链接地址')
                 ->help('http://www.baidu.com/index.html 必须带http或https');
+            $form->radio('enabletips', '启用打赏')->options(Artical::ENABLETIPS)->default(Artical::ENABLETIPS_NO);
             $form->saving(function (Form $form){
                 $form->model()->timestamp=date('Y-m-d H:i:s',time());
             });

@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Artical extends Model
 {
+    const ENABLETIPS_NO=0;  //禁用
+    const ENABLETIPS_YES=1; //启用
+    const ENABLETIPS=[
+        self::ENABLETIPS_NO=>'禁用',
+        self::ENABLETIPS_YES=>'启用',
+    ];
+
     protected $table = 'artical';
 
     public $timestamps = false;
@@ -32,5 +39,13 @@ class Artical extends Model
     public function expert()
     {
         return $this->hasOne(Expert::class,'expid','expid');
+    }
+
+    public static function getStateStr($state=self::ENABLETIPS_NO,$const='ENABLETIPS'){
+        eval("\$arr=self::$const;");
+        if(empty($arr[$state])){
+            return $arr[self::ENABLETIPS_NO];
+        }
+        return $arr[$state];
     }
 }
