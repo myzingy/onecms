@@ -37,11 +37,11 @@ Route::group([
     $router->resource('/livebcDaily', LivebcDailyController::class);
     $router->resource('/livebcApp', LivebcAppController::class);
 
-    $router->resource('/artical', ArticalController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
-    $router->resource('/articalDaily', ArticalDailyController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
-    $router->resource('/articalPaylog', ArticalPaylogController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
-    $router->resource('/articalNotes', ArticalNotesController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
-    $router->resource('/articalExpert', ArticalExpertController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
+    $router->resource('/artical', ArticalController::class);
+    $router->resource('/articalDaily', ArticalDailyController::class);
+    $router->resource('/articalPaylog', ArticalPaylogController::class);
+    $router->resource('/articalNotes', ArticalNotesController::class);
+    $router->resource('/articalExpert', ArticalExpertController::class);
 
     $router->resource('/redpackSetting', RedpackSettingController::class);
     $router->resource('/redpack', RedpackController::class);

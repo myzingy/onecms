@@ -79,10 +79,10 @@ class ArticalController extends Controller
             $grid->disableExport();
             if(Auth::isLecturer()){
                 $grid->model()->where(['expid'=>Admin::user()->id]);
-                $ArticalExpert=ArticalExpert::find(Admin::user()->id);
-                if($ArticalExpert->enable!=ArticalExpert::ENABLE_YES){
-                    $grid->disableCreation();
-                }
+//                $ArticalExpert=ArticalExpert::find(Admin::user()->id);
+//                if($ArticalExpert->enable!=ArticalExpert::ENABLE_YES){
+//                    $grid->disableCreation();
+//                }
             }
 
             $grid->id('ID')->sortable();
