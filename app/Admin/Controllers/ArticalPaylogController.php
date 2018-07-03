@@ -76,6 +76,7 @@ class ArticalPaylogController extends Controller
             $grid->disableExport();
             $grid->disableCreation();
             $grid->disableActions();
+            $grid->model()->orderBy('timestamp', 'desc');
 
             $where=['state'=>ArticalPaylog::STATE_YZF];
             $grid->model()->where($where);

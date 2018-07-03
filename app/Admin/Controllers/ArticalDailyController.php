@@ -139,6 +139,7 @@ class ArticalDailyController extends Controller
             $grid->disableExport();
             $grid->disableCreation();
             $grid->disableActions();
+            $grid->model()->orderBy('timestamp', 'desc');
 
             $grid->column('expert.real_name','讲师')->style('width:80px;');
             $grid->fee_exp('讲师收益')->display(function($fee){

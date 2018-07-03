@@ -90,7 +90,7 @@ class ArticalController extends Controller
                 $ArticalID=$this->id;
 
                 return <<<LINK
-<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3df6469b92876c23&redirect_uri=https%3A//hd.cnfoldv.com/artical/entry?aid={$ArticalID}&response_type=code&scope=snsapi_userinfo&state=0#wechat_redirect" 
+<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3df6469b92876c23&redirect_uri=https%3A//hd.cnfoldv.com/artical/entry?aid={$ArticalID}&response_type=code&scope=snsapi_base&state=0#wechat_redirect" 
 class="openWindow" 
 target="black"
 onclick="swal({title:'链接地址',text:'<div style=\'word-break: break-all;\'>'+this.href+'</div>',html:true});return false;">
@@ -121,7 +121,7 @@ LINK;
                 return '已'.Artical::getStateStr($enabletips);
             });
             $grid->column('countFee','打赏收入')->display(function(){
-                return $this->countFee();
+                return number_format($this->countFee()/100,2);
             });
 
             $grid->filter(function($filter){
@@ -159,7 +159,9 @@ LINK;
             })
                 ->placeholder('请输入 阅读原文 链接地址')
                 ->help('http://www.baidu.com/index.html 必须带http或https');
+            /*
             $form->radio('enabletips', '启用打赏')->options(Artical::ENABLETIPS)->default(Artical::ENABLETIPS_NO);
+            */
             $form->saving(function (Form $form){
                 $form->model()->timestamp=date('Y-m-d H:i:s',time());
             });
