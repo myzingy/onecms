@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Extensions\Takenow;
 use App\Models\ArticalDaily;
 
 use App\Models\Auth;
@@ -65,6 +66,7 @@ class ArticalDailyController extends Controller
 
                 //$box->solid();
                 $max_fee = $fee[ArticalDaily::TYPE_RZ] - $fee[ArticalDaily::TYPE_TX];
+
                 $box->content(number_format($max_fee, 2)
                     . ' '
                     . (($isLecturer && $max_fee > 0) ? new Takenow($max_fee > 19999 ? 19999 : $max_fee) : '')
@@ -140,6 +142,10 @@ class ArticalDailyController extends Controller
             $grid->disableCreation();
             $grid->disableActions();
             $grid->model()->orderBy('timestamp', 'desc');
+            $isLecturer = Auth::isLecturer();
+            if ($isLecturer) {
+                $grid->model()->where(['expid'=>Admin::user()->id]);
+            }
 
             $grid->column('expert.real_name','讲师')->style('width:80px;');
             $grid->fee_exp('讲师收益')->display(function($fee){

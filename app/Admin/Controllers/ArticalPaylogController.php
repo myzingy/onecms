@@ -4,6 +4,8 @@ namespace App\Admin\Controllers;
 
 use App\Models\ArticalPaylog;
 
+use App\Models\Auth;
+use App\User;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Facades\Admin;
@@ -79,6 +81,9 @@ class ArticalPaylogController extends Controller
             $grid->model()->orderBy('timestamp', 'desc');
 
             $where=['state'=>ArticalPaylog::STATE_YZF];
+            if(Auth::isLecturer()){
+                $where['expid']=Admin::user()->id;
+            }
             $grid->model()->where($where);
 
             $grid->tradeno('订单号')->style('width:180px;');

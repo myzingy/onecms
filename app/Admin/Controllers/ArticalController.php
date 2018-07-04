@@ -77,6 +77,7 @@ class ArticalController extends Controller
 
             $grid->disableRowSelector();
             $grid->disableExport();
+            $grid->model()->orderBy('id', 'desc');
             if(Auth::isLecturer()){
                 $grid->model()->where(['expid'=>Admin::user()->id]);
 //                $ArticalExpert=ArticalExpert::find(Admin::user()->id);
