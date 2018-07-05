@@ -14,11 +14,11 @@ class WangEditor extends Field
     protected $view = 'admin.wang-editor';
 
     protected static $css = [
-        '/vendor/wangEditor-3.0.9/release/wangEditor.min.css',
+        '/vendor/wangEditor-3.1.1/release/wangEditor.min.css',
     ];
 
     protected static $js = [
-        '/vendor/wangEditor-3.0.9/release/wangEditor.min.js',
+        '/vendor/wangEditor-3.1.1/release/wangEditor.min.js',
     ];
 
     public function render()
@@ -33,11 +33,34 @@ class WangEditor extends Field
 editor.customConfig.menus = ['emoticon'];
 END;
 
+        }else{
+            $menu=<<<END
+editor.customConfig.menus = [
+    'head',  // 标题
+    'bold',  // 粗体
+    'fontSize',  // 字号
+    'fontName',  // 字体
+    'italic',  // 斜体
+    'underline',  // 下划线
+    'strikeThrough',  // 删除线
+    'foreColor',  // 文字颜色
+    'backColor',  // 背景颜色
+    'link',  // 插入链接
+    'list',  // 列表
+    'justify',  // 对齐方式
+    'quote',  // 引用
+    'emoticon',  // 表情
+    'image',  // 插入图片
+    'undo',  // 撤销
+    'redo'  // 重复
+];
+END;
         }
         $this->script = <<<EOT
 
 var E = window.wangEditor
 var editor = new E('#{$this->id}');
+
 editor.customConfig.zIndex = 0
 //editor.customConfig.uploadImgShowBase64 = true
 editor.customConfig.uploadImgServer = "{$uploadImgUrl}";
