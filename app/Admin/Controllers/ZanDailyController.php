@@ -4,7 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Models\ArticalDaily;
 use App\Models\Auth;
-use App\Models\zanDaily;
+use App\Models\ZanDaily;
 
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
