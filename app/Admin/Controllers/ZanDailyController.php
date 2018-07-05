@@ -15,7 +15,7 @@ use Encore\Admin\Controllers\ModelForm;
 use Encore\Admin\Layout\Row;
 use Encore\Admin\Widgets\Box;
 
-class zanDailyController extends Controller
+class ZanDailyController extends Controller
 {
     use ModelForm;
 

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class zanDaily extends Model
+class ZanDaily extends Model
 {
     protected $table = 'zan_daily';
     public function expert()
