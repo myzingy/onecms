@@ -1341,6 +1341,9 @@ function Link(editor) {
 
     // 当前是否 active 状态
     this._active = false;
+
+    //是否图片
+    this._isImage=false;
 }
 
 // 原型
@@ -1351,7 +1354,7 @@ Link.prototype = {
     onClick: function onClick(e) {
         var editor = this.editor;
         var $linkelem = void 0;
-
+        console.log('this._active',this._active);
         if (this._active) {
             // 当前选区在链接里面
             $linkelem = editor.selection.getSelectionContainerElem();
@@ -1362,7 +1365,15 @@ Link.prototype = {
             editor.selection.createRangeByElem($linkelem);
             editor.selection.restoreSelection();
             // 显示 panel
-            this._createPanel($linkelem.text(), $linkelem.attr('href'));
+            var html=$linkelem.html();
+            if(/^<img[^>]+><br>$/.test(html)){
+                this._isImage=true;
+                this._createPanel(html, $linkelem.attr('href'));
+            }else{
+                this._isImage=false;
+                this._createPanel($linkelem.text(), $linkelem.attr('href'));
+            }
+
         } else {
             // 当前选区不在链接里面
             if (editor.selection.isSelectionEmpty()) {
@@ -1370,7 +1381,16 @@ Link.prototype = {
                 this._createPanel('', '');
             } else {
                 // 选中内容了
-                this._createPanel(editor.selection.getSelectionText(), '');
+                $linkelem = editor.selection.getSelectionContainerElem();
+                var html=$linkelem.html();
+                if(/^<img[^>]+><br>$/.test(html)){
+                    this._isImage=true;
+                    this._createPanel(html, '');
+                }else{
+                    this._isImage=false;
+                    this._createPanel(editor.selection.getSelectionText(), '');
+                }
+
             }
         }
     },
@@ -1396,7 +1416,7 @@ Link.prototype = {
                 // tab 的标题
                 title: '链接',
                 // 模板
-                tpl: '<div>\n                            <input id="' + inputTextId + '" type="text" class="block" value="' + text + '" placeholder="\u94FE\u63A5\u6587\u5B57"/></td>\n                            <input id="' + inputLinkId + '" type="text" class="block" value="' + link + '" placeholder="http://..."/></td>\n                            <div class="w-e-button-container">\n                                <button id="' + btnOkId + '" class="right">\u63D2\u5165</button>\n                                <button id="' + btnDelId + '" class="gray right" style="display:' + delBtnDisplay + '">\u5220\u9664\u94FE\u63A5</button>\n                            </div>\n                        </div>',
+                tpl: '<div>\n                            <input id="' + inputTextId + '" type="'+(_this._isImage?'hidden':'text')+'" class="block" value=\'' + text + '\' placeholder="\u94FE\u63A5\u6587\u5B57"/></td>\n                            <input id="' + inputLinkId + '" type="text" class="block" value="' + link + '" placeholder="http://..."/></td>\n                            <div class="w-e-button-container">\n                                <button id="' + btnOkId + '" class="right">\u63D2\u5165</button>\n                                <button id="' + btnDelId + '" class="gray right" style="display:' + delBtnDisplay + '">\u5220\u9664\u94FE\u63A5</button>\n                            </div>\n                        </div>',
                 // 事件绑定
                 events: [
                 // 插入链接
@@ -1448,6 +1468,15 @@ Link.prototype = {
         if (!$selectionELem) {
             return;
         }
+        //if(this._isImage){
+            var html=$selectionELem.html();
+            html=html.replace(/<a[^>]+>(.*)<\/a>/,function($0,$1){
+                return $1;
+            });
+            $selectionELem.html(html);
+            //editor.cmd.do('insertHTML',html);
+            return;
+        //}
         var selectionText = editor.selection.getSelectionText();
         editor.cmd.do('insertHTML', '<span>' + selectionText + '</span>');
     },
