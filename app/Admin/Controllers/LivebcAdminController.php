@@ -26,7 +26,7 @@ class LivebcAdminController extends Controller
     public function index()
     {
         return Admin::content(function (Content $content) {
-            if(Admin::user()->isRole('administrator')) {
+            if(!Admin::user()->isRole('lecturer')) {
                 $expid=Input::get('expid',0);
                 $le=LivebcExpert::find($expid);
                 $content->header($le->name);
@@ -46,7 +46,7 @@ class LivebcAdminController extends Controller
     public function edit($id)
     {
         return Admin::content(function (Content $content) use ($id) {
-            if(Admin::user()->isRole('administrator')) {
+            if(!Admin::user()->isRole('lecturer')) {
                 $content->header('编辑直播内容');
                 $content->description('');
 
