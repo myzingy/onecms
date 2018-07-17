@@ -99,7 +99,7 @@ class LivebcExpertController extends Controller
             $grid->model()->with(['expert']);
             $grid->column('expert.real_name','讲师');
             $grid->column('name','直播名称')->display(function($name){
-                if(Admin::user()->isRole('administrator')) {
+                if(!Admin::user()->isRole('lecturer')) {
                     return "<a href=\"/admin/livebcAdmin?expid={$this->expid}\">{$name} (进入直播)</a>";
                 }
                 return $name;
