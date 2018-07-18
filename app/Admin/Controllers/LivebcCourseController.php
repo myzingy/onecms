@@ -100,10 +100,10 @@ class LivebcCourseController extends Controller
             $grid->column('timestamp','时间')->style('width:200px;');
             $grid->state('状态')->select(LivebcCourse::STATE)->style('width:100px;');
             $grid->actions(function ($actions) {
-                $actions->disableDelete();
                 if(Auth::isLecturer()) {
-                    $actions->disableEdit();
+                    $actions->disableDelete();
                 }
+                //$actions->disableEdit();
             });
         });
     }
