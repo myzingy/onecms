@@ -36,6 +36,7 @@ Route::group([
     $router->resource('/livebcPaylog', LivebcPaylogController::class);
     $router->resource('/livebcDaily', LivebcDailyController::class);
     $router->resource('/livebcApp', LivebcAppController::class);
+    $router->resource('/livebcCourse', LivebcCourseController::class);
 
     $router->resource('/artical', ArticalController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
     $router->resource('/articalDaily', ArticalDailyController::class,['middleware' =>\App\Http\Middleware\Artical::class]);
